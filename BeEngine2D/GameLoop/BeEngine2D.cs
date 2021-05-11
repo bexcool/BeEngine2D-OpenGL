@@ -13,6 +13,7 @@ using Exception = System.Exception;
 using OpenGL_GameEngine.BeEngine2D.Rendering.Display;
 using OpenGL_GameEngine.BeEngine2D.GameLoop;
 using static OpenGL_GameEngine.BeEngine2D.GL;
+using OpenGL_GameEngine.BeEngine2D.Rendering.Shaders;
 
 namespace OpenGL_GameEngine.BeEngine2D
 {
@@ -29,7 +30,7 @@ namespace OpenGL_GameEngine.BeEngine2D
         // Shader vars
         uint VAO;
         uint VBO;
-        uint Shader;
+        Shader Shader;
 
         public enum CollisionType
         {
@@ -116,20 +117,8 @@ namespace OpenGL_GameEngine.BeEngine2D
                                             FragColor = vertexColor;
                                         }";
 
-            uint VS = glCreateShader(GL_VERTEX_SHADER);
-            glShaderSource(VS, VertexShader);
-            glCompileShader(VS);
-
-            uint FS = glCreateShader(GL_FRAGMENT_SHADER);
-            glShaderSource(FS, FragmentShader);
-            glCompileShader(FS);
-
-            Shader = glCreateProgram();
-            glAttachShader(Shader, VS);
-            glAttachShader(Shader, FS);
-
-            glLinkProgram(Shader);
-
+            Shader = new Shader(VertexShader, FragmentShader);
+            Shader.Load();
 
             VAO = glGenVertexArray();
             VBO = glGenBuffer();
@@ -169,7 +158,7 @@ namespace OpenGL_GameEngine.BeEngine2D
             glClearColor(0, 0, 0, 0);
             glClear(GL_COLOR_BUFFER_BIT);
 
-            glUseProgram(Shader);
+            Shader.Use();
 
             glBindVertexArray(VAO);
             glDrawArrays(GL_TRIANGLES, 0, 6);
