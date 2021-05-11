@@ -20,7 +20,6 @@ namespace OpenGL_GameEngine.BeEngine2D.Rendering.Display
             WindowSize = new Vector2(Width, Height);
 
             Glfw.Init();
-
             Glfw.WindowHint(Hint.ContextVersionMajor, 3);
             Glfw.WindowHint(Hint.ContextVersionMinor, 3);
             Glfw.WindowHint(Hint.OpenglProfile, Profile.Core);
@@ -45,7 +44,7 @@ namespace OpenGL_GameEngine.BeEngine2D.Rendering.Display
             Import(Glfw.GetProcAddress);
 
             glViewport(0, 0, Width, Height);
-            Glfw.SwapInterval(0); // 0 VSync is off, 1 VSync is on 
+            Glfw.SwapInterval(1); // 0 VSync is off, 1 VSync is on 
         }
 
         public static void CloseWindow()

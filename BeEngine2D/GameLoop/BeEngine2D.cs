@@ -8,13 +8,15 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Timer = System.Windows.Forms.Timer;
-using GLFW;
 using Exception = System.Exception;
+using System.Numerics;
+
+// Using engine
+using GLFW;
 using OpenGL_GameEngine.BeEngine2D.Rendering.Display;
 using OpenGL_GameEngine.BeEngine2D.GameLoop;
 using static OpenGL_GameEngine.BeEngine2D.GL;
 using OpenGL_GameEngine.BeEngine2D.Rendering.Shaders;
-using System.Numerics;
 using OpenGL_GameEngine.BeEngine2D.Rendering.Cameras;
 
 namespace OpenGL_GameEngine.BeEngine2D
@@ -48,7 +50,7 @@ namespace OpenGL_GameEngine.BeEngine2D
             Log.PrintInfo("*********************************************");
             Log.PrintInfo("Preparing BeEngine2D...");
 
-            CameraPosition = new Vector2(0, 0);
+            CameraPosition = new Vector2(400, 300);
 
             // Window values
             Log.PrintInfo("Assigning engine values...");
@@ -81,19 +83,15 @@ namespace OpenGL_GameEngine.BeEngine2D
                 GameTime.DeltaTime = (float)Glfw.Time - GameTime.TotalElapsedSeconds;
                 GameTime.TotalElapsedSeconds = (float)Glfw.Time;
 
-                Update();
-
                 Glfw.PollEvents();
+
+                Update();
 
                 Render();
             }
 
             DisplayManager.CloseWindow();
         }
-
-        protected abstract void Initialize();
-
-        protected abstract void Update();
 
         protected unsafe void LoadEngineContent()
         {
@@ -142,7 +140,7 @@ namespace OpenGL_GameEngine.BeEngine2D
                 -0.5f, -0.5f, 0f, 0f, 1f, // bottom left
             };
 
-            fixed(float* v = &Vertices[0])
+            fixed (float* v = &Vertices[0])
             {
                 glBufferData(GL_ARRAY_BUFFER, sizeof(float) * Vertices.Length, v, GL_STATIC_DRAW);
             }
@@ -157,6 +155,9 @@ namespace OpenGL_GameEngine.BeEngine2D
             glBindVertexArray(0);
 
             MainCamera = new Camera2D(DisplayManager.WindowSize / 2f, 2.5f);
+
+            // Setup key input
+            Glfw.SetKeyCallback(DisplayManager.Window, KeyInput);
         }
 
         protected void Render()
@@ -165,9 +166,8 @@ namespace OpenGL_GameEngine.BeEngine2D
             glClear(GL_COLOR_BUFFER_BIT);
 
             // Camera movement
-            Vector2 CameraPosition = new Vector2(400, 300);
             Vector2 Scale = new Vector2(150, 100);
-            float Rotation = (float)Math.Sin(GameTime.TotalElapsedSeconds) * (float)Math.PI * 2f;
+            float Rotation = /*(float)Math.Sin(GameTime.TotalElapsedSeconds) * (float)Math.PI * 2f*/0;
 
             Matrix4x4 MatrixTranslation = Matrix4x4.CreateTranslation(CameraPosition.X, CameraPosition.Y, 0);
             Matrix4x4 MatrixScale = Matrix4x4.CreateScale(Scale.X, Scale.Y, 1);
@@ -278,6 +278,9 @@ namespace OpenGL_GameEngine.BeEngine2D
 
             return null;
         }
+        protected abstract void Initialize();
+        protected abstract void Update();
+        protected abstract void KeyInput(Window window, Keys key, int scanCode, InputState state, ModifierKeys mods);
 
         public Vector2 CameraPosition { get; set; }
         public Vector2 CameraScale { get; set; }

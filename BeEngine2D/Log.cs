@@ -1,26 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpenGL_GameEngine.BeEngine2D
 {
     class Log
     {
-        public static void PrintInfo(string text)
+        public static void PrintInfo(object Value)
         {
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.Write(DateTime.Now.Hour + ":" + DateTime.Now.Minute + ":" + DateTime.Now.Second + ":" + DateTime.Now.Millisecond);
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.Write(" [INFO] ");
             Console.ForegroundColor = ConsoleColor.White;
-            Console.Write(text + "\n");
+            Console.Write(Value + "\n");
 
             try
             {
-                File.AppendAllText(@"log.txt", DateTime.Now.Hour + ":" + DateTime.Now.Minute + ":" + DateTime.Now.Second + ":" + DateTime.Now.Millisecond + " [INFO] " + text + "\n");
+                File.AppendAllText(@"log.txt", DateTime.Now.Hour + ":" + DateTime.Now.Minute + ":" + DateTime.Now.Second + ":" + DateTime.Now.Millisecond + " [INFO] " + Value + "\n");
             }
             catch (Exception ex)
             {
@@ -28,18 +24,18 @@ namespace OpenGL_GameEngine.BeEngine2D
             }
         }
 
-        public static void PrintWarning(string text)
+        public static void PrintWarning(object Value)
         {
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.Write(DateTime.Now.Hour + ":" + DateTime.Now.Minute + ":" + DateTime.Now.Second + ":" + DateTime.Now.Millisecond);
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.Write(" [WARNING] ");
             Console.ForegroundColor = ConsoleColor.White;
-            Console.Write(text + "\n");
+            Console.Write(Value + "\n");
 
             try
             {
-                File.AppendAllText(@"log.txt", DateTime.Now.Hour + ":" + DateTime.Now.Minute + ":" + DateTime.Now.Second + ":" + DateTime.Now.Millisecond + " [WARNING] " + text + "\n");
+                File.AppendAllText(@"log.txt", DateTime.Now.Hour + ":" + DateTime.Now.Minute + ":" + DateTime.Now.Second + ":" + DateTime.Now.Millisecond + " [WARNING] " + Value + "\n");
             }
             catch (Exception ex)
             {
@@ -47,17 +43,17 @@ namespace OpenGL_GameEngine.BeEngine2D
             }
         }
 
-        public static void PrintError(string text)
+        public static void PrintError(object Value)
         {
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.Write(DateTime.Now.Hour + ":" + DateTime.Now.Minute + ":" + DateTime.Now.Second + ":" + DateTime.Now.Millisecond);
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.Write(" [ERROR] " + text + "\n");
+            Console.Write(" [ERROR] " + Value + "\n");
             Console.ForegroundColor = ConsoleColor.White;
 
             try
             {
-                File.AppendAllText(@"log.txt", DateTime.Now.Hour + ":" + DateTime.Now.Minute + ":" + DateTime.Now.Second + ":" + DateTime.Now.Millisecond + " [ERROR] " + text + "\n");
+                File.AppendAllText(@"log.txt", DateTime.Now.Hour + ":" + DateTime.Now.Minute + ":" + DateTime.Now.Second + ":" + DateTime.Now.Millisecond + " [ERROR] " + Value + "\n");
             }
             catch (Exception ex)
             {
