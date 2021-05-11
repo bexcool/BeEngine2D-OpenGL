@@ -11,12 +11,13 @@ using OpenGL_GameEngine.BeEngine2D.GameLoop;
 using OpenGL_GameEngine.BeEngine2D.Rendering.Display;
 using static OpenGL_GameEngine.BeEngine2D.GL;
 using GLFW;
+using System.Numerics;
 
 namespace OpenGL_GameEngine.BeEngine2D
 {
     class DemoGame : BeEngine2D
     {
-        public DemoGame() : base(new Vector2D(615, 515), "BeEngine2D - Demo") { }
+        public DemoGame() : base(new Vector2(800, 600), "BeEngine2D - Demo") { }
 
         protected override void Initialize()
         {

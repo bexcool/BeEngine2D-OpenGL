@@ -14,12 +14,13 @@ using OpenGL_GameEngine.BeEngine2D.Rendering.Display;
 using OpenGL_GameEngine.BeEngine2D.GameLoop;
 using static OpenGL_GameEngine.BeEngine2D.GL;
 using OpenGL_GameEngine.BeEngine2D.Rendering.Shaders;
+using System.Numerics;
+using OpenGL_GameEngine.BeEngine2D.Rendering.Cameras;
 
 namespace OpenGL_GameEngine.BeEngine2D
 {
     public abstract class BeEngine2D
     {
-        public Vector2D ScreenSize = new Vector2D(512, 512);
         private string WindowTitle;
 
         public static List<Block> AllBlocks = new List<Block>();
@@ -32,22 +33,22 @@ namespace OpenGL_GameEngine.BeEngine2D
         uint VBO;
         Shader Shader;
 
+        // Camera
+        Camera2D MainCamera;
+
         public enum CollisionType
         {
             None, BlockAll, Overlap
         }
 
-        public BeEngine2D(Vector2D ScreenSize, string WindowTitle)
+        public BeEngine2D(Vector2 ScreenSize, string WindowTitle)
         {
             SetUpLog();
 
             Log.PrintInfo("*********************************************");
             Log.PrintInfo("Preparing BeEngine2D...");
 
-            this.ScreenSize = ScreenSize;
-            this.WindowTitle = WindowTitle;
-
-            CameraPosition = new Vector2D(0, 0);
+            CameraPosition = new Vector2(0, 0);
 
             // Window values
             Log.PrintInfo("Assigning engine values...");
@@ -101,11 +102,14 @@ namespace OpenGL_GameEngine.BeEngine2D
                                     layout (location = 0) in vec2 aPosition;
                                     layout (location = 1) in vec3 aColor;
                                     out vec4 vertexColor;
+
+                                    uniform mat4 projection;
+                                    uniform mat4 model;
                                     
                                     void main()
                                     {
                                         vertexColor = vec4(aColor.rgb, 1.0);
-                                        gl_Position = vec4(aPosition.xy, 0, 1.0);
+                                        gl_Position = projection * model * vec4(aPosition.xy, 0, 1.0);
                                     }";
 
             string FragmentShader = @"#version 330 core
@@ -151,6 +155,8 @@ namespace OpenGL_GameEngine.BeEngine2D
 
             glBindBuffer(GL_ARRAY_BUFFER, 0);
             glBindVertexArray(0);
+
+            MainCamera = new Camera2D(DisplayManager.WindowSize / 2f, 2.5f);
         }
 
         protected void Render()
@@ -158,7 +164,19 @@ namespace OpenGL_GameEngine.BeEngine2D
             glClearColor(0, 0, 0, 0);
             glClear(GL_COLOR_BUFFER_BIT);
 
+            // Camera movement
+            Vector2 CameraPosition = new Vector2(400, 300);
+            Vector2 Scale = new Vector2(150, 100);
+            float Rotation = (float)Math.Sin(GameTime.TotalElapsedSeconds) * (float)Math.PI * 2f;
+
+            Matrix4x4 MatrixTranslation = Matrix4x4.CreateTranslation(CameraPosition.X, CameraPosition.Y, 0);
+            Matrix4x4 MatrixScale = Matrix4x4.CreateScale(Scale.X, Scale.Y, 1);
+            Matrix4x4 MatrixRotation = Matrix4x4.CreateRotationZ(Rotation);
+
+            Shader.SetMatrix4x4("model", MatrixScale * MatrixRotation * MatrixTranslation);
+
             Shader.Use();
+            Shader.SetMatrix4x4("projection", MainCamera.GetProjectionMatrix());
 
             glBindVertexArray(VAO);
             glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -261,8 +279,8 @@ namespace OpenGL_GameEngine.BeEngine2D
             return null;
         }
 
-        public Vector2D CameraPosition { get; set; }
-        public Vector2D CameraScale { get; set; }
+        public Vector2 CameraPosition { get; set; }
+        public Vector2 CameraScale { get; set; }
         public int FPS { get; set; }
     }
 }

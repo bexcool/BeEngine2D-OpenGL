@@ -117,9 +117,9 @@
     <Compile Include="BeEngine2D\Light.cs" />
     <Compile Include="BeEngine2D\Log.cs" />
     <Compile Include="BeEngine2D\Polygon.cs" />
+    <Compile Include="BeEngine2D\Rendering\Cameras\Camera2D.cs" />
     <Compile Include="BeEngine2D\Rendering\Display\DisplayManager.cs" />
     <Compile Include="BeEngine2D\Rendering\Shaders\Shader.cs" />
-    <Compile Include="BeEngine2D\Vector2D.cs" />
     <Compile Include="DemoGame.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

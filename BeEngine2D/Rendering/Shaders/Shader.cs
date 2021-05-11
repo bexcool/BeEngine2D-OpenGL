@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using static OpenGL_GameEngine.BeEngine2D.GL;
@@ -65,6 +66,23 @@ namespace OpenGL_GameEngine.BeEngine2D.Rendering.Shaders
         public void Use()
         {
             glUseProgram(ProgramID);
+        }
+
+        public void SetMatrix4x4 (string UniformName, Matrix4x4 Matrix)
+        {
+            int Location = glGetUniformLocation(ProgramID, UniformName);
+            glUniformMatrix4fv(Location, 1, false, GetMatrix4x4Values(Matrix));
+        }
+
+        private float[] GetMatrix4x4Values(Matrix4x4 m)
+        {
+            return new float[]
+            {
+                m.M11, m.M12, m.M13, m.M14,
+                m.M21, m.M22, m.M23, m.M24,
+                m.M31, m.M32, m.M33, m.M34,
+                m.M41, m.M42, m.M43, m.M44
+            };
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,13 +14,13 @@ namespace OpenGL_GameEngine.BeEngine2D
 
         public Entity()
         {
-            Position = new Vector2D(0, 0);
-            Scale = new Vector2D(0, 0);
+            Position = new Vector2(0, 0);
+            Scale = new Vector2(0, 0);
 
             ObjectID = RadomID.Next() + Convert.ToInt32(DateTime.Now.Millisecond);
         }
 
-        public Entity(Vector2D Position, Vector2D Scale, BeEngine2D.CollisionType Collision, float MoveSpeed)
+        public Entity(Vector2 Position, Vector2 Scale, BeEngine2D.CollisionType Collision, float MoveSpeed)
         {
             this.Position = Position;
             this.Scale = Scale;
@@ -32,7 +33,7 @@ namespace OpenGL_GameEngine.BeEngine2D
             BeEngine2D.RegisterEntity(this);
         }
 
-        public Entity(Vector2D Position, Vector2D Scale, Bitmap Bmp, BeEngine2D.CollisionType Collision, float MoveSpeed)
+        public Entity(Vector2 Position, Vector2 Scale, Bitmap Bmp, BeEngine2D.CollisionType Collision, float MoveSpeed)
         {
             this.Position = Position;
             this.Scale = Scale;
@@ -45,7 +46,7 @@ namespace OpenGL_GameEngine.BeEngine2D
             BeEngine2D.RegisterEntity(this);
         }
 
-        public Entity(Vector2D Position, Vector2D Scale, Color Color, BeEngine2D.CollisionType Collision, float MoveSpeed)
+        public Entity(Vector2 Position, Vector2 Scale, Color Color, BeEngine2D.CollisionType Collision, float MoveSpeed)
         {
             this.Position = Position;
             this.Scale = Scale;
@@ -58,7 +59,7 @@ namespace OpenGL_GameEngine.BeEngine2D
             BeEngine2D.RegisterEntity(this);
         }
 
-        public Entity(Vector2D Position, Vector2D Scale, BeEngine2D.CollisionType Collision, float MoveSpeed, string Tag)
+        public Entity(Vector2 Position, Vector2 Scale, BeEngine2D.CollisionType Collision, float MoveSpeed, string Tag)
         {
             this.Position = Position;
             this.Scale = Scale;
@@ -72,7 +73,7 @@ namespace OpenGL_GameEngine.BeEngine2D
             BeEngine2D.RegisterEntity(this);
         }
 
-        public Entity(Vector2D Position, Vector2D Scale, Bitmap Bmp, BeEngine2D.CollisionType Collision, float MoveSpeed, string Tag)
+        public Entity(Vector2 Position, Vector2 Scale, Bitmap Bmp, BeEngine2D.CollisionType Collision, float MoveSpeed, string Tag)
         {
             this.Position = Position;
             this.Scale = Scale;
@@ -86,7 +87,7 @@ namespace OpenGL_GameEngine.BeEngine2D
             BeEngine2D.RegisterEntity(this);
         }
 
-        public Entity(Vector2D Position, Vector2D Scale, Color Color, BeEngine2D.CollisionType Collision, float MoveSpeed, string Tag)
+        public Entity(Vector2 Position, Vector2 Scale, Color Color, BeEngine2D.CollisionType Collision, float MoveSpeed, string Tag)
         {
             this.Position = Position;
             this.Scale = Scale;
@@ -196,8 +197,8 @@ namespace OpenGL_GameEngine.BeEngine2D
 
         public int ObjectID { get; }
         public BeEngine2D.CollisionType Collision { get; set; }
-        public Vector2D Position { get; set; }
-        public Vector2D Scale { get; set; }
+        public Vector2 Position { get; set; }
+        public Vector2 Scale { get; set; }
         public Bitmap Image { get; set; }
         public Color Color { get; set; }
         public string Tag { get; set; }
