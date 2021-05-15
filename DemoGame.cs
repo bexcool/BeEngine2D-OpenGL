@@ -13,6 +13,7 @@ using static OpenGL_GameEngine.BeEngine2D.GL;
 using GLFW;
 using System.Numerics;
 using Keys = GLFW.Keys;
+using System.Drawing;
 
 namespace OpenGL_GameEngine.BeEngine2D
 {
@@ -20,41 +21,70 @@ namespace OpenGL_GameEngine.BeEngine2D
     {
         public DemoGame() : base(new Vector2(800, 600), "BeEngine2D - Demo") { }
 
-        float PlayerSpeed = 1f;
+        Entity Player = new Entity(new Vector2(375, 275), new Vector2(50, 50), Color.Green, CollisionType.BlockAll, 10f);
 
         protected override void Initialize()
         {
 
         }
 
-        protected override void KeyInput(Window Window, Keys Key, int ScanCode, InputState State, ModifierKeys Mods)
-        {
-
-        }
-
         protected override void Update()
         {
-            if (Glfw.GetKey(DisplayManager.Window, Keys.A) == InputState.Press)
-            {
-                CameraPosition = new Vector2(CameraPosition.X - PlayerSpeed, CameraPosition.Y);
-            }
+            //Log.PrintWarning(GameTime.CalculateSpeed(PlayerSpeed));
+
+            //Nastavit, že kamera bude locknutá na player pos
 
             if (Glfw.GetKey(DisplayManager.Window, Keys.D) == InputState.Press)
             {
-                CameraPosition = new Vector2(CameraPosition.X + PlayerSpeed, CameraPosition.Y);
+                CameraPosition = new Vector2(CameraPosition.X - GameTime.CalculateSpeed(Player.MoveSpeed), CameraPosition.Y);
+                Player.Position = new Vector2(Player.Position.X + GameTime.CalculateSpeed(Player.MoveSpeed), Player.Position.Y);
+                
+                if (Player.IsColliding())
+                {
+                    Player.Position = new Vector2(Player.Position.X - GameTime.CalculateSpeed(Player.MoveSpeed), Player.Position.Y);
+                    CameraPosition = new Vector2(CameraPosition.X + GameTime.CalculateSpeed(Player.MoveSpeed), CameraPosition.Y);
+                }
+            }
+
+            if (Glfw.GetKey(DisplayManager.Window, Keys.A) == InputState.Press)
+            {
+                CameraPosition = new Vector2(CameraPosition.X + GameTime.CalculateSpeed(Player.MoveSpeed), CameraPosition.Y);
+                Player.Position = new Vector2(Player.Position.X - GameTime.CalculateSpeed(Player.MoveSpeed), Player.Position.Y);
+
+                if (Player.IsColliding())
+                {
+                    CameraPosition = new Vector2(CameraPosition.X - GameTime.CalculateSpeed(Player.MoveSpeed), CameraPosition.Y);
+                    Player.Position = new Vector2(Player.Position.X + GameTime.CalculateSpeed(Player.MoveSpeed), Player.Position.Y);
+                }
             }
 
             //Log.PrintInfo(1 / GameTime.DeltaTime);
 
-            if (Glfw.GetKey(DisplayManager.Window, Keys.W) == InputState.Press)
-            {
-                CameraPosition = new Vector2(CameraPosition.X, CameraPosition.Y - PlayerSpeed);
-            }
-
             if (Glfw.GetKey(DisplayManager.Window, Keys.S) == InputState.Press)
             {
-                CameraPosition = new Vector2(CameraPosition.X, CameraPosition.Y + PlayerSpeed);
+                CameraPosition = new Vector2(CameraPosition.X, CameraPosition.Y - GameTime.CalculateSpeed(Player.MoveSpeed));
+                Player.Position = new Vector2(Player.Position.X, Player.Position.Y + GameTime.CalculateSpeed(Player.MoveSpeed));
+
+                if (Player.IsColliding())
+                {
+                    CameraPosition = new Vector2(CameraPosition.X, CameraPosition.Y + GameTime.CalculateSpeed(Player.MoveSpeed));
+                    Player.Position = new Vector2(Player.Position.X, Player.Position.Y - GameTime.CalculateSpeed(Player.MoveSpeed));
+                }
             }
+
+            if (Glfw.GetKey(DisplayManager.Window, Keys.W) == InputState.Press)
+            {
+                CameraPosition = new Vector2(CameraPosition.X, CameraPosition.Y + GameTime.CalculateSpeed(Player.MoveSpeed));
+                Player.Position = new Vector2(Player.Position.X, Player.Position.Y - GameTime.CalculateSpeed(Player.MoveSpeed));
+
+                if (Player.IsColliding())
+                {
+                    CameraPosition = new Vector2(CameraPosition.X, CameraPosition.Y - GameTime.CalculateSpeed(Player.MoveSpeed));
+                    Player.Position = new Vector2(Player.Position.X, Player.Position.Y + GameTime.CalculateSpeed(Player.MoveSpeed));
+                }
+            }
+
+            //Log.PrintError(Player.IsColliding());
         }
     }
 }

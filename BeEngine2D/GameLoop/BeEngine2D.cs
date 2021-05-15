@@ -38,6 +38,8 @@ namespace OpenGL_GameEngine.BeEngine2D
         // Camera
         Camera2D MainCamera;
 
+        List<float> ListVerticies = new List<float>();
+
         public enum CollisionType
         {
             None, BlockAll, Overlap
@@ -83,9 +85,9 @@ namespace OpenGL_GameEngine.BeEngine2D
                 GameTime.DeltaTime = (float)Glfw.Time - GameTime.TotalElapsedSeconds;
                 GameTime.TotalElapsedSeconds = (float)Glfw.Time;
 
-                Glfw.PollEvents();
-
                 Update();
+
+                Glfw.PollEvents();
 
                 Render();
             }
@@ -122,23 +124,189 @@ namespace OpenGL_GameEngine.BeEngine2D
             Shader = new Shader(VertexShader, FragmentShader);
             Shader.Load();
 
+            new Block(new Vector2(60, 60), new Vector2(100, 100), Color.White, CollisionType.BlockAll);
+
+            new Block(new Vector2(60, 60), new Vector2(100, 30), Color.Red, CollisionType.BlockAll);
+
+            
             VAO = glGenVertexArray();
             VBO = glGenBuffer();
-
+            /*
             glBindVertexArray(VAO);
 
             glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
+            
             float[] Vertices =
             {
-                -0.5f, 0.5f, 1f, 0f, 0f, // top left
-                0.5f, 0.5f, 0f, 1f, 0f,// top right
-                -0.5f, -0.5f, 0f, 0f, 1f, // bottom left
+                -1f, -1f, 1f, 0f, 0f, // top left
+                -0f, -1f, 0f, 1f, 0f,// top right
+                -1f, -0f, 0f, 0f, 1f, // bottom left
+                
+                1f, 1f, 0f, 1f, 0f,// top right
+                1f, 0f, 0f, 1f, 1f, // bottom right
+                0f, 0f, 0f, 0f, 1f, // bottom left
 
-                0.5f, 0.5f, 0f, 1f, 0f,// top right
-                0.5f, -0.5f, 0f, 1f, 1f, // bottom right
-                -0.5f, -0.5f, 0f, 0f, 1f, // bottom left
+                1f, 1f, 1f, 1f, 1f,
+                1f, 0.5f, 1f, 1f, 1f,
+                0.5f, 1f, 1f, 1f, 1f,
             };
+            */
+            /*
+            new Block(new Vector2(60, 60), new Vector2(100, 100), Color.White, CollisionType.None);
+
+            new Block(new Vector2(60, 60), new Vector2(100, 30), Color.Red, CollisionType.None);
+
+            List<float> ListVerticies = new List<float>();
+
+            foreach (Block block in AllBlocks)
+            {
+                // Bottom left
+                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_X(block.Position.X));
+                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_Y(block.Position.Y + block.Scale.Y));
+                ListVerticies.AddRange( new List<float> { block.Color.R, block.Color.G, block.Color.B } );
+
+                // Top left
+                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_X(block.Position.X));
+                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_Y(block.Position.Y));
+                ListVerticies.AddRange(new List<float> { block.Color.R, block.Color.G, block.Color.B });
+
+                // Top right
+                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_X(block.Position.X + block.Scale.X));
+                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_Y(block.Position.Y));
+                ListVerticies.AddRange(new List<float> { block.Color.R, block.Color.G, block.Color.B });
+
+                // Bottom left
+                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_X(block.Position.X));
+                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_Y(block.Position.Y + block.Scale.Y));
+                ListVerticies.AddRange(new List<float> { block.Color.R, block.Color.G, block.Color.B });
+
+                // Top right
+                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_X(block.Position.X + block.Scale.X));
+                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_Y(block.Position.Y));
+                ListVerticies.AddRange(new List<float> { block.Color.R, block.Color.G, block.Color.B });
+
+                // Bottom right
+                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_X(block.Position.X + block.Scale.X));
+                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_Y(block.Position.Y + block.Scale.Y));
+                ListVerticies.AddRange(new List<float> { block.Color.R, block.Color.G, block.Color.B });
+            }
+
+            float[] Vertices = ListVerticies.ToArray();
+
+            fixed (float* v = &Vertices[0])
+            {
+                glBufferData(GL_ARRAY_BUFFER, sizeof(float) * Vertices.Length, v, GL_STATIC_DRAW);
+            }
+
+            glVertexAttribPointer(0, 2, GL_FLOAT, false, 5 * sizeof(float), (void*)0);
+            glEnableVertexAttribArray(0);
+
+            glVertexAttribPointer(1, 3, GL_FLOAT, false, 5 * sizeof(float), (void*)(2 * sizeof(float)));
+            glEnableVertexAttribArray(1);
+
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+            glBindVertexArray(0);*/
+
+            MainCamera = new Camera2D(DisplayManager.WindowSize / 2f, 1f);
+        }
+
+        protected unsafe void Render()
+        {
+            glClearColor(0, 0, 0, 0);
+            glClear(GL_COLOR_BUFFER_BIT);
+
+            // Camera movement
+            Vector2 Scale = new Vector2(DisplayManager.WindowSize.X / 2f, DisplayManager.WindowSize.Y / 2f);
+            float Rotation = /*(float)Math.Sin(GameTime.TotalElapsedSeconds) * (float)Math.PI * 2f*/
+            0;
+
+            Matrix4x4 MatrixTranslation = Matrix4x4.CreateTranslation(CameraPosition.X, CameraPosition.Y, 0);
+            Matrix4x4 MatrixScale = Matrix4x4.CreateScale(Scale.X, Scale.Y, 1);
+            Matrix4x4 MatrixRotation = Matrix4x4.CreateRotationZ(Rotation);
+
+            Shader.SetMatrix4x4("model", MatrixScale * MatrixRotation * MatrixTranslation);
+
+            Shader.Use();
+            Shader.SetMatrix4x4("projection", MainCamera.GetProjectionMatrix());
+
+            // Change viewport size
+
+
+            // Drawing
+            glBindVertexArray(VAO);
+
+            glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+            ListVerticies.Clear();
+            
+            foreach (Block block in AllBlocks)
+            {
+                // Bottom left
+                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_X(block.Position.X));
+                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_Y(block.Position.Y + block.Scale.Y));
+                ListVerticies.AddRange(new List<float> { block.Color.R, block.Color.G, block.Color.B });
+
+                // Top left
+                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_X(block.Position.X));
+                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_Y(block.Position.Y));
+                ListVerticies.AddRange(new List<float> { block.Color.R, block.Color.G, block.Color.B });
+
+                // Top right
+                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_X(block.Position.X + block.Scale.X));
+                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_Y(block.Position.Y));
+                ListVerticies.AddRange(new List<float> { block.Color.R, block.Color.G, block.Color.B });
+
+                // Bottom left
+                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_X(block.Position.X));
+                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_Y(block.Position.Y + block.Scale.Y));
+                ListVerticies.AddRange(new List<float> { block.Color.R, block.Color.G, block.Color.B });
+
+                // Top right
+                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_X(block.Position.X + block.Scale.X));
+                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_Y(block.Position.Y));
+                ListVerticies.AddRange(new List<float> { block.Color.R, block.Color.G, block.Color.B });
+
+                // Bottom right
+                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_X(block.Position.X + block.Scale.X));
+                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_Y(block.Position.Y + block.Scale.Y));
+                ListVerticies.AddRange(new List<float> { block.Color.R, block.Color.G, block.Color.B });
+            }
+            
+            foreach (Entity entity in AllEntities)
+            {
+                // Bottom left
+                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_X(entity.Position.X));
+                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_Y(entity.Position.Y + entity.Scale.Y));
+                ListVerticies.AddRange(new List<float> { entity.Color.R, entity.Color.G, entity.Color.B });
+
+                // Top left
+                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_X(entity.Position.X));
+                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_Y(entity.Position.Y));
+                ListVerticies.AddRange(new List<float> { entity.Color.R, entity.Color.G, entity.Color.B });
+
+                // Top right
+                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_X(entity.Position.X + entity.Scale.X));
+                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_Y(entity.Position.Y));
+                ListVerticies.AddRange(new List<float> { entity.Color.R, entity.Color.G, entity.Color.B });
+
+                // Bottom left
+                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_X(entity.Position.X));
+                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_Y(entity.Position.Y + entity.Scale.Y));
+                ListVerticies.AddRange(new List<float> { entity.Color.R, entity.Color.G, entity.Color.B });
+
+                // Top right
+                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_X(entity.Position.X + entity.Scale.X));
+                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_Y(entity.Position.Y));
+                ListVerticies.AddRange(new List<float> { entity.Color.R, entity.Color.G, entity.Color.B });
+
+                // Bottom right
+                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_X(entity.Position.X + entity.Scale.X));
+                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_Y(entity.Position.Y + entity.Scale.Y));
+                ListVerticies.AddRange(new List<float> { entity.Color.R, entity.Color.G, entity.Color.B });
+            }
+            
+            float[] Vertices = ListVerticies.ToArray();
 
             fixed (float* v = &Vertices[0])
             {
@@ -154,34 +322,10 @@ namespace OpenGL_GameEngine.BeEngine2D
             glBindBuffer(GL_ARRAY_BUFFER, 0);
             glBindVertexArray(0);
 
-            MainCamera = new Camera2D(DisplayManager.WindowSize / 2f, 2.5f);
-
-            // Setup key input
-            Glfw.SetKeyCallback(DisplayManager.Window, KeyInput);
-        }
-
-        protected void Render()
-        {
-            glClearColor(0, 0, 0, 0);
-            glClear(GL_COLOR_BUFFER_BIT);
-
-            // Camera movement
-            Vector2 Scale = new Vector2(150, 100);
-            float Rotation = /*(float)Math.Sin(GameTime.TotalElapsedSeconds) * (float)Math.PI * 2f*/0;
-
-            Matrix4x4 MatrixTranslation = Matrix4x4.CreateTranslation(CameraPosition.X, CameraPosition.Y, 0);
-            Matrix4x4 MatrixScale = Matrix4x4.CreateScale(Scale.X, Scale.Y, 1);
-            Matrix4x4 MatrixRotation = Matrix4x4.CreateRotationZ(Rotation);
-
-            Shader.SetMatrix4x4("model", MatrixScale * MatrixRotation * MatrixTranslation);
-
-            Shader.Use();
-            Shader.SetMatrix4x4("projection", MainCamera.GetProjectionMatrix());
-
             glBindVertexArray(VAO);
-            glDrawArrays(GL_TRIANGLES, 0, 6);
+            glDrawArrays(GL_TRIANGLES, 0, ListVerticies.Count / 15 * 3);
             glBindVertexArray(0);
-
+            
             Glfw.SwapBuffers(DisplayManager.Window);
         }
 
@@ -280,7 +424,6 @@ namespace OpenGL_GameEngine.BeEngine2D
         }
         protected abstract void Initialize();
         protected abstract void Update();
-        protected abstract void KeyInput(Window window, Keys key, int scanCode, InputState state, ModifierKeys mods);
 
         public Vector2 CameraPosition { get; set; }
         public Vector2 CameraScale { get; set; }

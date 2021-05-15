@@ -145,6 +145,7 @@ namespace OpenGL_GameEngine.BeEngine2D
             }
             else
             {
+                Log.PrintWarning("fewffwef"); //Je to tady
                 return false;
             }
         }

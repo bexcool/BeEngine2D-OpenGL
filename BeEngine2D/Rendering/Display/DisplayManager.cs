@@ -44,12 +44,32 @@ namespace OpenGL_GameEngine.BeEngine2D.Rendering.Display
             Import(Glfw.GetProcAddress);
 
             glViewport(0, 0, Width, Height);
-            Glfw.SwapInterval(1); // 0 VSync is off, 1 VSync is on 
+            Glfw.SwapInterval(0); // 0 VSync is off, 1 VSync is on 
         }
 
         public static void CloseWindow()
         {
             Glfw.Terminate();
+        }
+
+        public static void SetWindowsSize(int Width, int Height)
+        {
+            
+        }
+
+        public static Vector2 ConvertPixelsToGL (double PosX, double PosY)
+        {
+            return new Vector2((float)(1 - (WindowSize.X - PosX) / WindowSize.X * 2), (float)(1 - (WindowSize.Y - PosY) / WindowSize.Y * 2));
+        }
+
+        public static double ConvertPixelsToGL_X (double PosX)
+        {
+            return (float)(1 - (WindowSize.X - PosX) / WindowSize.X * 2);
+        }
+
+        public static double ConvertPixelsToGL_Y (double PosY)
+        {
+            return (float)(1 - (WindowSize.Y - PosY) / WindowSize.Y * 2);
         }
     }
 }

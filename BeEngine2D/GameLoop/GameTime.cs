@@ -10,5 +10,10 @@ namespace OpenGL_GameEngine.BeEngine2D.GameLoop
     {
         public static float DeltaTime { get; set; }
         public static float TotalElapsedSeconds { get; set; }
+
+        public static float CalculateSpeed(float MoveSpeed)
+        {
+            return DeltaTime * MoveSpeed * 10;
+        }
     }
 }
