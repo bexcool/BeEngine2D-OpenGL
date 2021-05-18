@@ -18,6 +18,7 @@ using OpenGL_GameEngine.BeEngine2D.GameLoop;
 using static OpenGL_GameEngine.BeEngine2D.GL;
 using OpenGL_GameEngine.BeEngine2D.Rendering.Shaders;
 using OpenGL_GameEngine.BeEngine2D.Rendering.Cameras;
+using OpenGL_GameEngine.BeEngine2D.Rendering.Textures;
 
 namespace OpenGL_GameEngine.BeEngine2D
 {
@@ -29,16 +30,21 @@ namespace OpenGL_GameEngine.BeEngine2D
         public static List<Entity> AllEntities = new List<Entity>();
         public static List<Polygon> AllPolygons = new List<Polygon>();
         public static List<Light> AllLights = new List<Light>();
-
+        
         // Shader vars
         uint VAO;
         uint VBO;
         Shader Shader;
 
-        // Camera
+        // Viewport
         Camera2D MainCamera;
 
+        // World
         List<float> ListVerticies = new List<float>();
+
+        // Frame rate
+        Timer FPSRefresh = new Timer();
+        public bool ShowFPS;
 
         public enum CollisionType
         {
@@ -116,6 +122,8 @@ namespace OpenGL_GameEngine.BeEngine2D
                                         out vec4 FragColor;
                                         in vec4 vertexColor;
                                         
+                                        uniform sampler2D TEX_SAMPLER;
+
                                         void main()
                                         {
                                             FragColor = vertexColor;
@@ -124,13 +132,10 @@ namespace OpenGL_GameEngine.BeEngine2D
             Shader = new Shader(VertexShader, FragmentShader);
             Shader.Load();
 
-            new Block(new Vector2(60, 60), new Vector2(100, 100), Color.White, CollisionType.BlockAll);
-
-            new Block(new Vector2(60, 60), new Vector2(100, 30), Color.Red, CollisionType.BlockAll);
-
-            
             VAO = glGenVertexArray();
             VBO = glGenBuffer();
+
+            #region On load old code
             /*
             glBindVertexArray(VAO);
 
@@ -207,8 +212,25 @@ namespace OpenGL_GameEngine.BeEngine2D
 
             glBindBuffer(GL_ARRAY_BUFFER, 0);
             glBindVertexArray(0);*/
+            #endregion
 
             MainCamera = new Camera2D(DisplayManager.WindowSize / 2f, 1f);
+
+            /*
+            Texture TestTexture = new Texture(@"F:\Photos\bliss.jpg");
+
+            Shader.UploadTexture("TEX_SAMPLER", 0);
+            glActiveTexture(GL_TEXTURE0);
+            TestTexture.Bind();*/
+
+            FPSRefresh.Interval = 2000;
+            FPSRefresh.Tick += FPSRefresh_Tick;
+            FPSRefresh.Start();
+        }
+
+        private void FPSRefresh_Tick(object sender, EventArgs e)
+        {
+            if (ShowFPS) Log.PrintInfo("FPS: " + (int)(1 / GameTime.DeltaTime));
         }
 
         protected unsafe void Render()
@@ -229,13 +251,28 @@ namespace OpenGL_GameEngine.BeEngine2D
 
             Shader.Use();
             Shader.SetMatrix4x4("projection", MainCamera.GetProjectionMatrix());
+            /*
+            // Change camera position
+            if (CameraPosition.X != DisplayManager.WindowSize.X / 2 && CameraPosition.Y != DisplayManager.WindowSize.Y / 2)
+            {
+                CameraPosition = new Vector2(DisplayManager.WindowSize.X / 2, DisplayManager.WindowSize.Y / 2);
+            }*/
 
-            // Change viewport size
+            Glfw.GetWindowSize(DisplayManager.Window, out int Width, out int Height);
 
+            Vector2 PreviousWindowSize = DisplayManager.WindowSize;
+
+            // Set viewport size
+            if ((int)DisplayManager.WindowSize.X != Width || (int)DisplayManager.WindowSize.Y != Height)
+            {
+                glViewport(0, 0, Width, Height);
+                DisplayManager.WindowSize = new Vector2(Width, Height);
+                
+                CameraPosition = new Vector2(CameraPosition.X - PreviousWindowSize.X / 2 + DisplayManager.WindowSize.X / 2, CameraPosition.Y - PreviousWindowSize.Y / 2 + DisplayManager.WindowSize.Y / 2);
+            }
 
             // Drawing
             glBindVertexArray(VAO);
-
             glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
             ListVerticies.Clear();
@@ -243,69 +280,69 @@ namespace OpenGL_GameEngine.BeEngine2D
             foreach (Block block in AllBlocks)
             {
                 // Bottom left
-                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_X(block.Position.X));
-                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_Y(block.Position.Y + block.Scale.Y));
+                ListVerticies.Add((float)DisplayManager.NormalizePixels_X(block.Position.X));
+                ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(block.Position.Y + block.Scale.Y));
                 ListVerticies.AddRange(new List<float> { block.Color.R, block.Color.G, block.Color.B });
 
                 // Top left
-                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_X(block.Position.X));
-                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_Y(block.Position.Y));
+                ListVerticies.Add((float)DisplayManager.NormalizePixels_X(block.Position.X));
+                ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(block.Position.Y));
                 ListVerticies.AddRange(new List<float> { block.Color.R, block.Color.G, block.Color.B });
 
                 // Top right
-                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_X(block.Position.X + block.Scale.X));
-                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_Y(block.Position.Y));
+                ListVerticies.Add((float)DisplayManager.NormalizePixels_X(block.Position.X + block.Scale.X));
+                ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(block.Position.Y));
                 ListVerticies.AddRange(new List<float> { block.Color.R, block.Color.G, block.Color.B });
 
                 // Bottom left
-                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_X(block.Position.X));
-                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_Y(block.Position.Y + block.Scale.Y));
+                ListVerticies.Add((float)DisplayManager.NormalizePixels_X(block.Position.X));
+                ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(block.Position.Y + block.Scale.Y));
                 ListVerticies.AddRange(new List<float> { block.Color.R, block.Color.G, block.Color.B });
 
                 // Top right
-                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_X(block.Position.X + block.Scale.X));
-                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_Y(block.Position.Y));
+                ListVerticies.Add((float)DisplayManager.NormalizePixels_X(block.Position.X + block.Scale.X));
+                ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(block.Position.Y));
                 ListVerticies.AddRange(new List<float> { block.Color.R, block.Color.G, block.Color.B });
 
                 // Bottom right
-                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_X(block.Position.X + block.Scale.X));
-                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_Y(block.Position.Y + block.Scale.Y));
+                ListVerticies.Add((float)DisplayManager.NormalizePixels_X(block.Position.X + block.Scale.X));
+                ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(block.Position.Y + block.Scale.Y));
                 ListVerticies.AddRange(new List<float> { block.Color.R, block.Color.G, block.Color.B });
             }
             
             foreach (Entity entity in AllEntities)
             {
                 // Bottom left
-                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_X(entity.Position.X));
-                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_Y(entity.Position.Y + entity.Scale.Y));
+                ListVerticies.Add((float)DisplayManager.NormalizePixels_X(entity.Position.X));
+                ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(entity.Position.Y + entity.Scale.Y));
                 ListVerticies.AddRange(new List<float> { entity.Color.R, entity.Color.G, entity.Color.B });
 
                 // Top left
-                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_X(entity.Position.X));
-                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_Y(entity.Position.Y));
+                ListVerticies.Add((float)DisplayManager.NormalizePixels_X(entity.Position.X));
+                ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(entity.Position.Y));
                 ListVerticies.AddRange(new List<float> { entity.Color.R, entity.Color.G, entity.Color.B });
 
                 // Top right
-                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_X(entity.Position.X + entity.Scale.X));
-                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_Y(entity.Position.Y));
+                ListVerticies.Add((float)DisplayManager.NormalizePixels_X(entity.Position.X + entity.Scale.X));
+                ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(entity.Position.Y));
                 ListVerticies.AddRange(new List<float> { entity.Color.R, entity.Color.G, entity.Color.B });
 
                 // Bottom left
-                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_X(entity.Position.X));
-                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_Y(entity.Position.Y + entity.Scale.Y));
+                ListVerticies.Add((float)DisplayManager.NormalizePixels_X(entity.Position.X));
+                ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(entity.Position.Y + entity.Scale.Y));
                 ListVerticies.AddRange(new List<float> { entity.Color.R, entity.Color.G, entity.Color.B });
 
                 // Top right
-                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_X(entity.Position.X + entity.Scale.X));
-                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_Y(entity.Position.Y));
+                ListVerticies.Add((float)DisplayManager.NormalizePixels_X(entity.Position.X + entity.Scale.X));
+                ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(entity.Position.Y));
                 ListVerticies.AddRange(new List<float> { entity.Color.R, entity.Color.G, entity.Color.B });
 
                 // Bottom right
-                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_X(entity.Position.X + entity.Scale.X));
-                ListVerticies.Add((float)DisplayManager.ConvertPixelsToGL_Y(entity.Position.Y + entity.Scale.Y));
+                ListVerticies.Add((float)DisplayManager.NormalizePixels_X(entity.Position.X + entity.Scale.X));
+                ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(entity.Position.Y + entity.Scale.Y));
                 ListVerticies.AddRange(new List<float> { entity.Color.R, entity.Color.G, entity.Color.B });
             }
-            
+
             float[] Vertices = ListVerticies.ToArray();
 
             fixed (float* v = &Vertices[0])
@@ -325,7 +362,7 @@ namespace OpenGL_GameEngine.BeEngine2D
             glBindVertexArray(VAO);
             glDrawArrays(GL_TRIANGLES, 0, ListVerticies.Count / 15 * 3);
             glBindVertexArray(0);
-            
+
             Glfw.SwapBuffers(DisplayManager.Window);
         }
 
@@ -422,6 +459,74 @@ namespace OpenGL_GameEngine.BeEngine2D
 
             return null;
         }
+
+        public Vector2 GetNormalizedMousePosition()
+        {
+            Glfw.GetCursorPosition(DisplayManager.Window, out double X, out double Y);
+
+            return new Vector2((float)X - (int)CameraPosition.X + DisplayManager.WindowSize.X / 2, (float)Y - (int)CameraPosition.Y + DisplayManager.WindowSize.Y / 2);
+        }
+
+        public bool KeyPressed(Keys Key)
+        {
+            if (Glfw.GetKey(DisplayManager.Window, Key) == InputState.Press)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool KeyReleased(Keys Key)
+        {
+            if (Glfw.GetKey(DisplayManager.Window, Key) == InputState.Release)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool KeyRepeated(Keys Key)
+        {
+            if (Glfw.GetKey(DisplayManager.Window, Key) == InputState.Repeat)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool MouseButtonPressed(MouseButton Key)
+        {
+            if (Glfw.GetMouseButton(DisplayManager.Window, Key) == InputState.Press)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool MouseButtonReleased(MouseButton Key)
+        {
+            if (Glfw.GetMouseButton(DisplayManager.Window, Key) == InputState.Release)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool MouseButtonRepeated(MouseButton Key)
+        {
+            if (Glfw.GetMouseButton(DisplayManager.Window, Key) == InputState.Repeat)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         protected abstract void Initialize();
         protected abstract void Update();
 

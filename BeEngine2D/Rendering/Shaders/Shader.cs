@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GLFW;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -83,6 +84,13 @@ namespace OpenGL_GameEngine.BeEngine2D.Rendering.Shaders
                 m.M31, m.M32, m.M33, m.M34,
                 m.M41, m.M42, m.M43, m.M44
             };
+        }
+
+        public void UploadTexture(string VarName, int Slot)
+        {
+            int VarLocation = glGetUniformLocation(ProgramID, VarName);
+            Use();
+            glUniform1i(VarLocation, Slot);
         }
     }
 }

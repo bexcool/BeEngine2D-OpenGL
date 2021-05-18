@@ -25,7 +25,7 @@ namespace OpenGL_GameEngine.BeEngine2D.Rendering.Display
             Glfw.WindowHint(Hint.OpenglProfile, Profile.Core);
 
             Glfw.WindowHint(Hint.Focused, true);
-            Glfw.WindowHint(Hint.Resizable, false);
+            Glfw.WindowHint(Hint.Resizable, true);
 
             Window = Glfw.CreateWindow(Width, Height, Title, Monitor.None, Window.None);
 
@@ -54,20 +54,22 @@ namespace OpenGL_GameEngine.BeEngine2D.Rendering.Display
 
         public static void SetWindowsSize(int Width, int Height)
         {
-            
+            Glfw.SetWindowSize(Window, Width, Height);
+            WindowSize = new Vector2(Width, Height);
+            glViewport(0, 0, Width, Height);
         }
 
-        public static Vector2 ConvertPixelsToGL (double PosX, double PosY)
+        public static Vector2 NormalizePixels (double PosX, double PosY)
         {
             return new Vector2((float)(1 - (WindowSize.X - PosX) / WindowSize.X * 2), (float)(1 - (WindowSize.Y - PosY) / WindowSize.Y * 2));
         }
 
-        public static double ConvertPixelsToGL_X (double PosX)
+        public static double NormalizePixels_X (double PosX)
         {
             return (float)(1 - (WindowSize.X - PosX) / WindowSize.X * 2);
         }
 
-        public static double ConvertPixelsToGL_Y (double PosY)
+        public static double NormalizePixels_Y (double PosY)
         {
             return (float)(1 - (WindowSize.Y - PosY) / WindowSize.Y * 2);
         }

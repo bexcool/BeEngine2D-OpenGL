@@ -9,3 +9,12 @@ F:\Windows Apps Projects\OpenGL_GameEngine\obj\Release\OpenGL_GameEngine.exe
 F:\Windows Apps Projects\OpenGL_GameEngine\obj\Release\OpenGL_GameEngine.pdb
 F:\Windows Apps Projects\OpenGL_GameEngine\obj\Release\OpenGL_GameEngine.BeEngine2D.GLFW.Strings.resources
 F:\Windows Apps Projects\OpenGL_GameEngine\obj\Release\OpenGL_GameEngine.csproj.GenerateResource.cache
+F:\Windows Apps Projects\OpenGL_GameEngine\bin\Release\StbiSharp.dll
+F:\Windows Apps Projects\OpenGL_GameEngine\bin\Release\System.Buffers.dll
+F:\Windows Apps Projects\OpenGL_GameEngine\bin\Release\System.Memory.dll
+F:\Windows Apps Projects\OpenGL_GameEngine\bin\Release\System.Numerics.Vectors.dll
+F:\Windows Apps Projects\OpenGL_GameEngine\bin\Release\System.Runtime.CompilerServices.Unsafe.dll
+F:\Windows Apps Projects\OpenGL_GameEngine\bin\Release\System.Buffers.xml
+F:\Windows Apps Projects\OpenGL_GameEngine\bin\Release\System.Memory.xml
+F:\Windows Apps Projects\OpenGL_GameEngine\bin\Release\System.Numerics.Vectors.xml
+F:\Windows Apps Projects\OpenGL_GameEngine\bin\Release\System.Runtime.CompilerServices.Unsafe.xml

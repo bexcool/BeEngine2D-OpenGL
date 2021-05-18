@@ -204,5 +204,6 @@ namespace OpenGL_GameEngine.BeEngine2D
         public Color Color { get; set; }
         public string Tag { get; set; }
         public float MoveSpeed { get; set; }
+        public int HealthPoints { get; set; }
     }
 }
