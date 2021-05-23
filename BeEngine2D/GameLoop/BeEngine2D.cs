@@ -137,10 +137,10 @@ namespace OpenGL_GameEngine.BeEngine2D
 
                                         void main()
                                         {
-                                            FragColor = vertexColor;
+                                            FragColor = texture(TEX_SAMPLER, fTexCoords);
                                         }";
 
-            //FragColor = texture(TEX_SAMPLER, fTexCoords);
+            //FragColor = vertexColor;
 
             Shader = new Shader(VertexShader, FragmentShader);
             Shader.Load();
@@ -293,42 +293,42 @@ namespace OpenGL_GameEngine.BeEngine2D
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_X(block.Position.X));
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(block.Position.Y + block.Scale.Y));
                 ListVerticies.AddRange(new List<float> { block.Color.R / 255f, block.Color.G / 255f, block.Color.B / 255f });
-                //ListVerticies.AddRange(new List<float> { 0, 0 });
+                ListVerticies.AddRange(new List<float> { 0, 0 });
 
                 // Top left
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_X(block.Position.X));
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(block.Position.Y));
                 ListVerticies.AddRange(new List<float> { block.Color.R / 255f, block.Color.G / 255f, block.Color.B / 255f });
-                //ListVerticies.AddRange(new List<float> { 0, 1 });
+                ListVerticies.AddRange(new List<float> { 0, 1 });
 
                 // Top right
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_X(block.Position.X + block.Scale.X));
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(block.Position.Y));
                 ListVerticies.AddRange(new List<float> { block.Color.R / 255f, block.Color.G / 255f, block.Color.B / 255f });
-                //ListVerticies.AddRange(new List<float> { 1, 1 });
+                ListVerticies.AddRange(new List<float> { 1, 1 });
 
                 // Bottom left
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_X(block.Position.X));
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(block.Position.Y + block.Scale.Y));
                 ListVerticies.AddRange(new List<float> { block.Color.R / 255f, block.Color.G / 255f, block.Color.B / 255f });
-                //ListVerticies.AddRange(new List<float> { 0, 0 });
+                ListVerticies.AddRange(new List<float> { 0, 0 });
 
                 // Top right
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_X(block.Position.X + block.Scale.X));
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(block.Position.Y));
                 ListVerticies.AddRange(new List<float> { block.Color.R / 255f, block.Color.G / 255f, block.Color.B / 255f });
-                //ListVerticies.AddRange(new List<float> { 1, 1 });
+                ListVerticies.AddRange(new List<float> { 1, 1 });
 
                 // Bottom right
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_X(block.Position.X + block.Scale.X));
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(block.Position.Y + block.Scale.Y));
                 ListVerticies.AddRange(new List<float> { block.Color.R / 255f, block.Color.G / 255f, block.Color.B / 255f });
-                //ListVerticies.AddRange(new List<float> { 1, 0 });
+                ListVerticies.AddRange(new List<float> { 1, 0 });
 
             }
 
             foreach (Entity entity in AllEntities)
-            {/*
+            {
                 Texture texture = new Texture(entity.ImageURL);
 
                 if (entity.ImageURL != null)
@@ -336,43 +336,43 @@ namespace OpenGL_GameEngine.BeEngine2D
                     glActiveTexture(GL_TEXTURE0);
                     Shader.UploadTexture("TEX_SAMPLER", 0);
                     texture.Bind();
-                }*/
+                }
 
                 // Bottom left
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_X(entity.Position.X));
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(entity.Position.Y + entity.Scale.Y));
                 ListVerticies.AddRange(new List<float> { entity.Color.R / 255f, entity.Color.G / 255f, entity.Color.B / 255f });
-                //ListVerticies.AddRange(new List<float> { 0, 0 });
+                ListVerticies.AddRange(new List<float> { 0, 0 });
 
                 // Top left
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_X(entity.Position.X));
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(entity.Position.Y));
                 ListVerticies.AddRange(new List<float> { entity.Color.R / 255f, entity.Color.G / 255f, entity.Color.B / 255f });
-                //ListVerticies.AddRange(new List<float> { 0, 0.1f });
+                ListVerticies.AddRange(new List<float> { 0, 1 });
 
                 // Top right
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_X(entity.Position.X + entity.Scale.X));
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(entity.Position.Y));
                 ListVerticies.AddRange(new List<float> { entity.Color.R / 255f, entity.Color.G / 255f, entity.Color.B / 255f });
-                //ListVerticies.AddRange(new List<float> { 0.1f, 0.1f });
+                ListVerticies.AddRange(new List<float> { 1, 1 });
 
                 // Bottom left
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_X(entity.Position.X));
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(entity.Position.Y + entity.Scale.Y));
                 ListVerticies.AddRange(new List<float> { entity.Color.R / 255f, entity.Color.G / 255f, entity.Color.B / 255f });
-                //ListVerticies.AddRange(new List<float> { 0, 0 });
+                ListVerticies.AddRange(new List<float> { 0, 0 });
 
                 // Top right
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_X(entity.Position.X + entity.Scale.X));
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(entity.Position.Y));
                 ListVerticies.AddRange(new List<float> { entity.Color.R / 255f, entity.Color.G / 255f, entity.Color.B / 255f });
-                //ListVerticies.AddRange(new List<float> { 0.1f, 0.1f });
+                ListVerticies.AddRange(new List<float> { 1, 1 });
 
                 // Bottom right
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_X(entity.Position.X + entity.Scale.X));
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(entity.Position.Y + entity.Scale.Y));
                 ListVerticies.AddRange(new List<float> { entity.Color.R / 255f, entity.Color.G / 255f, entity.Color.B / 255f });
-                //ListVerticies.AddRange(new List<float> { 0.1f, 0 });
+                ListVerticies.AddRange(new List<float> { 1, 0 });
 
                 /*
                 if (entity.ImageURL != null)
@@ -400,15 +400,15 @@ namespace OpenGL_GameEngine.BeEngine2D
 
             glVertexAttribPointer(1, 3, GL_FLOAT, false, 5 * sizeof(float), (void*)(2 * sizeof(float)));
             glEnableVertexAttribArray(1);
-            /*
+            
             glVertexAttribPointer(2, 2, GL_FLOAT, false, 5 * sizeof(float), (void*)(4 * sizeof(float)));
             glEnableVertexAttribArray(2);
-            */
+            
             glBindBuffer(GL_ARRAY_BUFFER, 0);
             glBindVertexArray(0);
 
             glBindVertexArray(VAO);
-            glDrawArrays(GL_TRIANGLES, 0, ListVerticies.Count / 5); // :7 for textured and :5 for color only
+            glDrawArrays(GL_TRIANGLES, 0, ListVerticies.Count / 7); // :7 for textured and :5 for color only
             glBindVertexArray(0);
 
             Glfw.SwapBuffers(DisplayManager.Window);

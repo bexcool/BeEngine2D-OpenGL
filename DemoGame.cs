@@ -21,9 +21,9 @@ namespace OpenGL_GameEngine.BeEngine2D
     {
         public DemoGame() : base(new Vector2(800, 600), "BeEngine2D - Demo") { }
 
-        Entity Player = new Entity(new Vector2(375, 275), new Vector2(50, 50), Color.Lime, CollisionType.BlockAll, 15f, "player");
+        //Entity Player = new Entity(new Vector2(375, 275), new Vector2(50, 50), Color.Lime, CollisionType.BlockAll, 15f, "player");
 
-        //Entity Player = new Entity(new Vector2(375, 275), new Vector2(50, 50), @"F:\Obrázky\block.png", CollisionType.BlockAll, 15f);
+        Entity Player = new Entity(new Vector2(375, 275), new Vector2(50, 50), @"F:\Obrázky\block.png", CollisionType.BlockAll, 15f);
 
         // Game map (you can make own map creator, but I have used this array map)
         private string[,] Map =
@@ -50,7 +50,7 @@ namespace OpenGL_GameEngine.BeEngine2D
 
             //new Block(new Vector2(0, 0), new Vector2(100, 100), Color.White, CollisionType.BlockAll);
 
-            new Block(new Vector2(600, 60), new Vector2(100, 30), Color.Khaki, CollisionType.BlockAll);
+            /*new Block(new Vector2(600, 60), new Vector2(100, 30), Color.Khaki, CollisionType.BlockAll);
 
             for (int i = 0; i < Map.GetLength(0); i++)
             {
@@ -59,7 +59,7 @@ namespace OpenGL_GameEngine.BeEngine2D
                     if (Map[i, j] == "a") new Block(new Vector2(j * 30, i * 30), new Vector2(30, 30), Color.White, CollisionType.BlockAll);
                     //if (Map[i, j] == "b") new Block(new Vector2(j * 30, i * 30), new Vector2(30, 30), Color.Black, CollisionType.None);
                 }
-            }
+            }*/
         }
 
         protected override void Update()
