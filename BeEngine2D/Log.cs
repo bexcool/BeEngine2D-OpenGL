@@ -14,13 +14,16 @@ namespace OpenGL_GameEngine.BeEngine2D
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write(Value + "\n");
 
-            try
+            if (BeEngine2D.SaveLog)
             {
-                File.AppendAllText(@"log.txt", DateTime.Now.Hour + ":" + DateTime.Now.Minute + ":" + DateTime.Now.Second + ":" + DateTime.Now.Millisecond + " [INFO] " + Value + "\n");
-            }
-            catch (Exception ex)
-            {
-                PrintError("Can't write to log file - " + ex);
+                try
+                {
+                    File.AppendAllText(@"log.txt", DateTime.Now.Hour + ":" + DateTime.Now.Minute + ":" + DateTime.Now.Second + ":" + DateTime.Now.Millisecond + " [INFO] " + Value + "\n");
+                }
+                catch (Exception ex)
+                {
+                    PrintError("Can't write to log file - " + ex);
+                }
             }
         }
 
@@ -33,13 +36,16 @@ namespace OpenGL_GameEngine.BeEngine2D
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write(Value + "\n");
 
-            try
+            if (BeEngine2D.SaveLog)
             {
-                File.AppendAllText(@"log.txt", DateTime.Now.Hour + ":" + DateTime.Now.Minute + ":" + DateTime.Now.Second + ":" + DateTime.Now.Millisecond + " [WARNING] " + Value + "\n");
-            }
-            catch (Exception ex)
-            {
-                PrintError("Can't write to log file - " + ex);
+                try
+                {
+                    File.AppendAllText(@"log.txt", DateTime.Now.Hour + ":" + DateTime.Now.Minute + ":" + DateTime.Now.Second + ":" + DateTime.Now.Millisecond + " [WARNING] " + Value + "\n");
+                }
+                catch (Exception ex)
+                {
+                    PrintError("Can't write to log file - " + ex);
+                }
             }
         }
 
@@ -50,14 +56,17 @@ namespace OpenGL_GameEngine.BeEngine2D
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Write(" [ERROR] " + Value + "\n");
             Console.ForegroundColor = ConsoleColor.White;
-
-            try
+            
+            if (BeEngine2D.SaveLog)
             {
-                File.AppendAllText(@"log.txt", DateTime.Now.Hour + ":" + DateTime.Now.Minute + ":" + DateTime.Now.Second + ":" + DateTime.Now.Millisecond + " [ERROR] " + Value + "\n");
-            }
-            catch (Exception ex)
-            {
-                PrintError("Can't write to log file - " + ex);
+                try
+                {
+                    File.AppendAllText(@"log.txt", DateTime.Now.Hour + ":" + DateTime.Now.Minute + ":" + DateTime.Now.Second + ":" + DateTime.Now.Millisecond + " [ERROR] " + Value + "\n");
+                }
+                catch (Exception ex)
+                {
+                    PrintError("Can't write to log file - " + ex);
+                }
             }
         }
     }

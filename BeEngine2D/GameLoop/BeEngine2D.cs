@@ -26,6 +26,8 @@ namespace OpenGL_GameEngine.BeEngine2D
     {
         private string WindowTitle;
 
+        public static bool SaveLog = true;
+
         public static List<Block> AllBlocks = new List<Block>();
         public static List<Entity> AllEntities = new List<Entity>();
         public static List<Polygon> AllPolygons = new List<Polygon>();
@@ -38,6 +40,7 @@ namespace OpenGL_GameEngine.BeEngine2D
 
         // Viewport
         Camera2D MainCamera;
+        Vector2 PreviousWindowSize;
 
         // World
         List<float> ListVerticies = new List<float>();
@@ -53,7 +56,7 @@ namespace OpenGL_GameEngine.BeEngine2D
 
         public BeEngine2D(Vector2 ScreenSize, string WindowTitle)
         {
-            SetUpLog();
+            if (SaveLog) SetUpLog();
 
             Log.PrintInfo("*********************************************");
             Log.PrintInfo("Preparing BeEngine2D...");
@@ -105,9 +108,13 @@ namespace OpenGL_GameEngine.BeEngine2D
         {
             // Creating shaders
             string VertexShader = @"#version 330 core
+
                                     layout (location = 0) in vec2 aPosition;
                                     layout (location = 1) in vec3 aColor;
+                                    layout (location = 2) in vec2 aTexCoords;
+
                                     out vec4 vertexColor;
+                                    out vec2 fTexCoords;
 
                                     uniform mat4 projection;
                                     uniform mat4 model;
@@ -115,12 +122,16 @@ namespace OpenGL_GameEngine.BeEngine2D
                                     void main()
                                     {
                                         vertexColor = vec4(aColor.rgb, 1.0);
+                                        fTexCoords = aTexCoords;
                                         gl_Position = projection * model * vec4(aPosition.xy, 0, 1.0);
                                     }";
 
             string FragmentShader = @"#version 330 core
+
                                         out vec4 FragColor;
+
                                         in vec4 vertexColor;
+                                        in vec2 fTexCoords;
                                         
                                         uniform sampler2D TEX_SAMPLER;
 
@@ -129,11 +140,15 @@ namespace OpenGL_GameEngine.BeEngine2D
                                             FragColor = vertexColor;
                                         }";
 
+            //FragColor = texture(TEX_SAMPLER, fTexCoords);
+
             Shader = new Shader(VertexShader, FragmentShader);
             Shader.Load();
 
             VAO = glGenVertexArray();
             VBO = glGenBuffer();
+
+            PreviousWindowSize = DisplayManager.WindowSize;
 
             #region On load old code
             /*
@@ -216,13 +231,6 @@ namespace OpenGL_GameEngine.BeEngine2D
 
             MainCamera = new Camera2D(DisplayManager.WindowSize / 2f, 1f);
 
-            /*
-            Texture TestTexture = new Texture(@"F:\Photos\bliss.jpg");
-
-            Shader.UploadTexture("TEX_SAMPLER", 0);
-            glActiveTexture(GL_TEXTURE0);
-            TestTexture.Bind();*/
-
             FPSRefresh.Interval = 2000;
             FPSRefresh.Tick += FPSRefresh_Tick;
             FPSRefresh.Start();
@@ -260,16 +268,18 @@ namespace OpenGL_GameEngine.BeEngine2D
 
             Glfw.GetWindowSize(DisplayManager.Window, out int Width, out int Height);
 
-            Vector2 PreviousWindowSize = DisplayManager.WindowSize;
-
             // Set viewport size
             if ((int)DisplayManager.WindowSize.X != Width || (int)DisplayManager.WindowSize.Y != Height)
             {
+                PreviousWindowSize = DisplayManager.WindowSize;
+
                 glViewport(0, 0, Width, Height);
                 DisplayManager.WindowSize = new Vector2(Width, Height);
-                
-                CameraPosition = new Vector2(CameraPosition.X - PreviousWindowSize.X / 2 + DisplayManager.WindowSize.X / 2, CameraPosition.Y - PreviousWindowSize.Y / 2 + DisplayManager.WindowSize.Y / 2);
+
+                //CameraPosition = new Vector2(CameraPosition.X - PreviousWindowSize.X / 2 + DisplayManager.WindowSize.X / 2, CameraPosition.Y - PreviousWindowSize.Y / 2 + DisplayManager.WindowSize.Y / 2);
             }
+
+            MainCamera.FocusedObjectTag = CameraFocusedObjectTag;
 
             // Drawing
             glBindVertexArray(VAO);
@@ -282,65 +292,100 @@ namespace OpenGL_GameEngine.BeEngine2D
                 // Bottom left
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_X(block.Position.X));
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(block.Position.Y + block.Scale.Y));
-                ListVerticies.AddRange(new List<float> { block.Color.R, block.Color.G, block.Color.B });
+                ListVerticies.AddRange(new List<float> { block.Color.R / 255f, block.Color.G / 255f, block.Color.B / 255f });
+                //ListVerticies.AddRange(new List<float> { 0, 0 });
 
                 // Top left
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_X(block.Position.X));
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(block.Position.Y));
-                ListVerticies.AddRange(new List<float> { block.Color.R, block.Color.G, block.Color.B });
+                ListVerticies.AddRange(new List<float> { block.Color.R / 255f, block.Color.G / 255f, block.Color.B / 255f });
+                //ListVerticies.AddRange(new List<float> { 0, 1 });
 
                 // Top right
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_X(block.Position.X + block.Scale.X));
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(block.Position.Y));
-                ListVerticies.AddRange(new List<float> { block.Color.R, block.Color.G, block.Color.B });
+                ListVerticies.AddRange(new List<float> { block.Color.R / 255f, block.Color.G / 255f, block.Color.B / 255f });
+                //ListVerticies.AddRange(new List<float> { 1, 1 });
 
                 // Bottom left
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_X(block.Position.X));
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(block.Position.Y + block.Scale.Y));
-                ListVerticies.AddRange(new List<float> { block.Color.R, block.Color.G, block.Color.B });
+                ListVerticies.AddRange(new List<float> { block.Color.R / 255f, block.Color.G / 255f, block.Color.B / 255f });
+                //ListVerticies.AddRange(new List<float> { 0, 0 });
 
                 // Top right
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_X(block.Position.X + block.Scale.X));
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(block.Position.Y));
-                ListVerticies.AddRange(new List<float> { block.Color.R, block.Color.G, block.Color.B });
+                ListVerticies.AddRange(new List<float> { block.Color.R / 255f, block.Color.G / 255f, block.Color.B / 255f });
+                //ListVerticies.AddRange(new List<float> { 1, 1 });
 
                 // Bottom right
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_X(block.Position.X + block.Scale.X));
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(block.Position.Y + block.Scale.Y));
-                ListVerticies.AddRange(new List<float> { block.Color.R, block.Color.G, block.Color.B });
+                ListVerticies.AddRange(new List<float> { block.Color.R / 255f, block.Color.G / 255f, block.Color.B / 255f });
+                //ListVerticies.AddRange(new List<float> { 1, 0 });
+
             }
-            
+
             foreach (Entity entity in AllEntities)
-            {
+            {/*
+                Texture texture = new Texture(entity.ImageURL);
+
+                if (entity.ImageURL != null)
+                {
+                    glActiveTexture(GL_TEXTURE0);
+                    Shader.UploadTexture("TEX_SAMPLER", 0);
+                    texture.Bind();
+                }*/
+
                 // Bottom left
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_X(entity.Position.X));
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(entity.Position.Y + entity.Scale.Y));
-                ListVerticies.AddRange(new List<float> { entity.Color.R, entity.Color.G, entity.Color.B });
+                ListVerticies.AddRange(new List<float> { entity.Color.R / 255f, entity.Color.G / 255f, entity.Color.B / 255f });
+                //ListVerticies.AddRange(new List<float> { 0, 0 });
 
                 // Top left
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_X(entity.Position.X));
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(entity.Position.Y));
-                ListVerticies.AddRange(new List<float> { entity.Color.R, entity.Color.G, entity.Color.B });
+                ListVerticies.AddRange(new List<float> { entity.Color.R / 255f, entity.Color.G / 255f, entity.Color.B / 255f });
+                //ListVerticies.AddRange(new List<float> { 0, 0.1f });
 
                 // Top right
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_X(entity.Position.X + entity.Scale.X));
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(entity.Position.Y));
-                ListVerticies.AddRange(new List<float> { entity.Color.R, entity.Color.G, entity.Color.B });
+                ListVerticies.AddRange(new List<float> { entity.Color.R / 255f, entity.Color.G / 255f, entity.Color.B / 255f });
+                //ListVerticies.AddRange(new List<float> { 0.1f, 0.1f });
 
                 // Bottom left
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_X(entity.Position.X));
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(entity.Position.Y + entity.Scale.Y));
-                ListVerticies.AddRange(new List<float> { entity.Color.R, entity.Color.G, entity.Color.B });
+                ListVerticies.AddRange(new List<float> { entity.Color.R / 255f, entity.Color.G / 255f, entity.Color.B / 255f });
+                //ListVerticies.AddRange(new List<float> { 0, 0 });
 
                 // Top right
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_X(entity.Position.X + entity.Scale.X));
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(entity.Position.Y));
-                ListVerticies.AddRange(new List<float> { entity.Color.R, entity.Color.G, entity.Color.B });
+                ListVerticies.AddRange(new List<float> { entity.Color.R / 255f, entity.Color.G / 255f, entity.Color.B / 255f });
+                //ListVerticies.AddRange(new List<float> { 0.1f, 0.1f });
 
                 // Bottom right
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_X(entity.Position.X + entity.Scale.X));
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(entity.Position.Y + entity.Scale.Y));
-                ListVerticies.AddRange(new List<float> { entity.Color.R, entity.Color.G, entity.Color.B });
+                ListVerticies.AddRange(new List<float> { entity.Color.R / 255f, entity.Color.G / 255f, entity.Color.B / 255f });
+                //ListVerticies.AddRange(new List<float> { 0.1f, 0 });
+
+                /*
+                if (entity.ImageURL != null)
+                {
+                    texture.UnBind();
+                }*/
+
+                // Update camera position
+                if (entity.Tag != null && entity.Tag == MainCamera.FocusedObjectTag)
+                {
+                    // Copy from when window size changed
+                    CameraPosition = new Vector2(entity.Position.X * -1 - entity.Scale.X / 2 + InitialWindowWidth - (InitialWindowWidth / 2 - DisplayManager.WindowSize.X / 2), entity.Position.Y * -1 - entity.Scale.Y / 2 + InitialWindowHeight - (InitialWindowHeight / 2 - DisplayManager.WindowSize.Y / 2));
+                }
             }
 
             float[] Vertices = ListVerticies.ToArray();
@@ -355,12 +400,15 @@ namespace OpenGL_GameEngine.BeEngine2D
 
             glVertexAttribPointer(1, 3, GL_FLOAT, false, 5 * sizeof(float), (void*)(2 * sizeof(float)));
             glEnableVertexAttribArray(1);
-
+            /*
+            glVertexAttribPointer(2, 2, GL_FLOAT, false, 5 * sizeof(float), (void*)(4 * sizeof(float)));
+            glEnableVertexAttribArray(2);
+            */
             glBindBuffer(GL_ARRAY_BUFFER, 0);
             glBindVertexArray(0);
 
             glBindVertexArray(VAO);
-            glDrawArrays(GL_TRIANGLES, 0, ListVerticies.Count / 15 * 3);
+            glDrawArrays(GL_TRIANGLES, 0, ListVerticies.Count / 5); // :7 for textured and :5 for color only
             glBindVertexArray(0);
 
             Glfw.SwapBuffers(DisplayManager.Window);
@@ -464,7 +512,7 @@ namespace OpenGL_GameEngine.BeEngine2D
         {
             Glfw.GetCursorPosition(DisplayManager.Window, out double X, out double Y);
 
-            return new Vector2((float)X - (int)CameraPosition.X + DisplayManager.WindowSize.X / 2, (float)Y - (int)CameraPosition.Y + DisplayManager.WindowSize.Y / 2);
+            return new Vector2((float)X - (int)CameraPosition.X + DisplayManager.WindowSize.X / 2 + (InitialWindowWidth - DisplayManager.WindowSize.X) / 2, (float)Y - (int)CameraPosition.Y + DisplayManager.WindowSize.Y / 2 + (InitialWindowHeight - DisplayManager.WindowSize.Y) / 2);
         }
 
         public bool KeyPressed(Keys Key)
@@ -531,6 +579,7 @@ namespace OpenGL_GameEngine.BeEngine2D
         protected abstract void Update();
 
         public Vector2 CameraPosition { get; set; }
+        public string CameraFocusedObjectTag { get; set; }
         public Vector2 CameraScale { get; set; }
         public int FPS { get; set; }
     }

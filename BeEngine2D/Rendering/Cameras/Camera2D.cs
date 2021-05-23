@@ -12,6 +12,7 @@ namespace OpenGL_GameEngine.BeEngine2D.Rendering.Cameras
     {
         public Vector2 FocusPosition { get; set; }
         public float Zoom { get; set; }
+        public string FocusedObjectTag { get; set; }
 
         public Camera2D (Vector2 FocusPosition, float Zoom)
         {
@@ -30,6 +31,11 @@ namespace OpenGL_GameEngine.BeEngine2D.Rendering.Cameras
             Matrix4x4 ZoomMatrix = Matrix4x4.CreateScale(Zoom);
 
             return OrthoMatrix * ZoomMatrix;
+        }
+
+        public void FollowObjectByTag(string Tag)
+        {
+            FocusedObjectTag = Tag;
         }
     }
 }

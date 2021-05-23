@@ -89,7 +89,7 @@ namespace OpenGL_GameEngine.BeEngine2D.Rendering.Shaders
         public void UploadTexture(string VarName, int Slot)
         {
             int VarLocation = glGetUniformLocation(ProgramID, VarName);
-            Use();
+            //Use();
             glUniform1i(VarLocation, Slot);
         }
     }

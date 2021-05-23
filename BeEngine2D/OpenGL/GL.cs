@@ -898,7 +898,7 @@ namespace OpenGL_GameEngine.BeEngine2D
         /// <returns>Generated texture names.</returns>
 
 
-        public static uint[] glGenTextures(int n)
+        public static uint[] glGenTextures(int n, uint texID)
         {
             var textures = new uint[n];
             fixed (uint* ids = &textures[0])

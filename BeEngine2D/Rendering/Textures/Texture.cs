@@ -26,28 +26,36 @@ namespace OpenGL_GameEngine.BeEngine2D.Rendering.Textures
             TexID = glGenTexture();
             glBindTexture(GL_TEXTURE_2D, TexID);
 
-            //Set texture parameters
+            // Set texture parameters
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
             // When stretching the image, pixelate
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
-            //When shrinking the image, pixelate
+            // When shrinking the image, pixelate
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-            int Width = 16;
-            int Height = 16;
-
-            Bitmap Image = (Bitmap)Bitmap.FromFile(FilePath);
-
-            if (Image != null)
+            if (FilePath != null)
             {
-                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Width, Height, 0, GL_RGB, GL_UNSIGNED_BYTE, Image.GetHbitmap());
-            }
-            else
-            {
-                Log.PrintError("Can't load image \"" + FilePath + "\"");
+                Bitmap Image = (Bitmap)Bitmap.FromFile(FilePath);
+
+                Image.RotateFlip(RotateFlipType.RotateNoneFlipY);
+
+                if (Image != null)
+                {
+                    BitmapData BmpData = Image.LockBits(new Rectangle(0, 0, Image.Width, Image.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+
+                    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, BmpData.Width, BmpData.Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, BmpData.Scan0);
+
+                    Image.UnlockBits(BmpData);
+                }
+                else
+                {
+                    Log.PrintError("Can't load image \"" + FilePath + "\"");
+                }
+
+                Image.Dispose();
             }
         }
 

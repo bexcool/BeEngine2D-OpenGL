@@ -33,11 +33,11 @@ namespace OpenGL_GameEngine.BeEngine2D
             BeEngine2D.RegisterEntity(this);
         }
 
-        public Entity(Vector2 Position, Vector2 Scale, Bitmap Bmp, BeEngine2D.CollisionType Collision, float MoveSpeed)
+        public Entity(Vector2 Position, Vector2 Scale, string ImageURL, BeEngine2D.CollisionType Collision, float MoveSpeed)
         {
             this.Position = Position;
             this.Scale = Scale;
-            this.Image = Bmp;
+            this.ImageURL = ImageURL;
             this.Collision = Collision;
             this.MoveSpeed = MoveSpeed;
 
@@ -73,11 +73,11 @@ namespace OpenGL_GameEngine.BeEngine2D
             BeEngine2D.RegisterEntity(this);
         }
 
-        public Entity(Vector2 Position, Vector2 Scale, Bitmap Bmp, BeEngine2D.CollisionType Collision, float MoveSpeed, string Tag)
+        public Entity(Vector2 Position, Vector2 Scale, string ImageURL, BeEngine2D.CollisionType Collision, float MoveSpeed, string Tag)
         {
             this.Position = Position;
             this.Scale = Scale;
-            this.Image = Bmp;
+            this.ImageURL = ImageURL;
             this.Collision = Collision;
             this.Tag = Tag;
             this.MoveSpeed = MoveSpeed;
@@ -200,7 +200,7 @@ namespace OpenGL_GameEngine.BeEngine2D
         public BeEngine2D.CollisionType Collision { get; set; }
         public Vector2 Position { get; set; }
         public Vector2 Scale { get; set; }
-        public Bitmap Image { get; set; }
+        public string ImageURL { get; set; }
         public Color Color { get; set; }
         public string Tag { get; set; }
         public float MoveSpeed { get; set; }
