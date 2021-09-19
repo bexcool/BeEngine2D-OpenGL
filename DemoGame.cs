@@ -67,10 +67,10 @@ namespace OpenGL_GameEngine.BeEngine2D
 
             new Light(new Vector2(800, 100), 100, 10);
 
-            new SoundPlayer(new Vector2(300, 400), @"F:\HUDBA\Rady - Broke.mp3", 0.2f , 400, true);
+            new SoundPlayer(new Vector2(300, 400), @".\Sounds\Rady - Broke.mp3", 0.2f , 400, true); 
             new Block(new Vector2(295, 395), new Vector2(10, 10), Color.Black, CollisionType.Overlap);
 
-            new SoundPlayer(new Vector2(-100, 400), @"F:\HUDBA\Ment - 128.mp3", 0.3f, 400, true);
+            new SoundPlayer(new Vector2(-100, 400), @".\Sounds\Ment - 128.mp3", 0.3f, 400, true);
             new Block(new Vector2(-105, 395), new Vector2(10, 10), Color.Black, CollisionType.Overlap);
 
             for (int i = 0; i < Map.GetLength(0); i++)
