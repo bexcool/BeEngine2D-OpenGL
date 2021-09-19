@@ -34,11 +34,11 @@ namespace OpenGL_GameEngine.BeEngine2D
             BeEngine2D.RegisterBlock(this);
         }
 
-        public Block(Vector2 Position, Vector2 Scale, Bitmap Bmp, BeEngine2D.CollisionType Collision)
+        public Block(Vector2 Position, Vector2 Scale, string ImageURL, BeEngine2D.CollisionType Collision)
         {
             this.Position = Position;
             this.Scale = Scale;
-            this.Image = Bmp;
+            this.ImageURL = ImageURL;
             this.Collision = Collision;
             this.Z_Index = 0;
 
@@ -74,11 +74,11 @@ namespace OpenGL_GameEngine.BeEngine2D
             BeEngine2D.RegisterBlock(this);
         }
 
-        public Block(Vector2 Position, Vector2 Scale, Bitmap Bmp, BeEngine2D.CollisionType Collision, string Tag)
+        public Block(Vector2 Position, Vector2 Scale, string ImageURL, BeEngine2D.CollisionType Collision, string Tag)
         {
             this.Position = Position;
             this.Scale = Scale;
-            this.Image = Bmp;
+            this.ImageURL = ImageURL;
             this.Collision = Collision;
             this.Tag = Tag;
             this.Z_Index = 0;
@@ -115,11 +115,11 @@ namespace OpenGL_GameEngine.BeEngine2D
             BeEngine2D.RegisterBlock(this);
         }
 
-        public Block(Vector2 Position, Vector2 Scale, Bitmap Bmp, BeEngine2D.CollisionType Collision, int Z_Index)
+        public Block(Vector2 Position, Vector2 Scale, string ImageURL, BeEngine2D.CollisionType Collision, int Z_Index)
         {
             this.Position = Position;
             this.Scale = Scale;
-            this.Image = Bmp;
+            this.ImageURL = ImageURL;
             this.Collision = Collision;
             this.Z_Index = Z_Index;
 
@@ -155,11 +155,11 @@ namespace OpenGL_GameEngine.BeEngine2D
             BeEngine2D.RegisterBlock(this);
         }
 
-        public Block(Vector2 Position, Vector2 Scale, Bitmap Bmp, BeEngine2D.CollisionType Collision, string Tag, int Z_Index)
+        public Block(Vector2 Position, Vector2 Scale, string ImageURL, BeEngine2D.CollisionType Collision, string Tag, int Z_Index)
         {
             this.Position = Position;
             this.Scale = Scale;
-            this.Image = Bmp;
+            this.ImageURL = ImageURL;
             this.Collision = Collision;
             this.Tag = Tag;
             this.Z_Index = Z_Index;
@@ -283,7 +283,7 @@ namespace OpenGL_GameEngine.BeEngine2D
         public BeEngine2D.CollisionType Collision { get; set; }
         public Vector2 Position { get; set; }
         public Vector2 Scale { get; set; }
-        public Bitmap Image { get; set; }
+        public string ImageURL { get; set; }
         public Color Color { get; set; }
         public string Tag { get; set; }
     }

@@ -32,6 +32,7 @@ namespace OpenGL_GameEngine.BeEngine2D
         public static List<Entity> AllEntities = new List<Entity>();
         public static List<Polygon> AllPolygons = new List<Polygon>();
         public static List<Light> AllLights = new List<Light>();
+        public static List<SoundPlayer> AllSoundPlayers = new List<SoundPlayer>();
         
         // Shader vars
         uint VAO;
@@ -98,6 +99,7 @@ namespace OpenGL_GameEngine.BeEngine2D
 
                 Glfw.PollEvents();
 
+                UpdateLevel();
                 Render();
             }
 
@@ -110,7 +112,7 @@ namespace OpenGL_GameEngine.BeEngine2D
             string VertexShader = @"#version 330 core
 
                                     layout (location = 0) in vec2 aPosition;
-                                    layout (location = 1) in vec3 aColor;
+                                    layout(location = 1) in vec3 aColor;
                                     layout (location = 2) in vec2 aTexCoords;
 
                                     out vec4 vertexColor;
@@ -137,10 +139,13 @@ namespace OpenGL_GameEngine.BeEngine2D
 
                                         void main()
                                         {
-                                            FragColor = texture(TEX_SAMPLER, fTexCoords);
+                                            FragColor = vertexColor;
                                         }";
 
+            //vertexColor = vec4(aColor.rgb, 1.0);
+            //layout(location = 1) in vec3 aColor;
             //FragColor = vertexColor;
+            //FragColor = texture(TEX_SAMPLER, fTexCoords);
 
             Shader = new Shader(VertexShader, FragmentShader);
             Shader.Load();
@@ -243,7 +248,7 @@ namespace OpenGL_GameEngine.BeEngine2D
 
         protected unsafe void Render()
         {
-            glClearColor(0, 0, 0, 0);
+            glClearColor(0, 0.4f, 0, 0);
             glClear(GL_COLOR_BUFFER_BIT);
 
             // Camera movement
@@ -287,48 +292,111 @@ namespace OpenGL_GameEngine.BeEngine2D
 
             ListVerticies.Clear();
             
+            // Polygons
+            foreach (Polygon polygon in AllPolygons)
+            {
+                for (int i = 0; i < polygon.Positions.Length - 1; i++)
+                {
+                    ListVerticies.Add((float)DisplayManager.NormalizePixels_X(polygon.Positions[0].X));
+                    ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(polygon.Positions[0].Y));
+                    ListVerticies.AddRange(new List<float> { polygon.FillColor.R / 255f, polygon.FillColor.G / 255f, polygon.FillColor.B / 255f });
+
+                    ListVerticies.Add((float)DisplayManager.NormalizePixels_X(polygon.Positions[i].X));
+                    ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(polygon.Positions[i].Y));
+                    ListVerticies.AddRange(new List<float> { polygon.FillColor.R / 255f, polygon.FillColor.G / 255f, polygon.FillColor.B / 255f });
+
+                    ListVerticies.Add((float)DisplayManager.NormalizePixels_X(polygon.Positions[i + 1].X));
+                    ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(polygon.Positions[i + 1].Y));
+                    ListVerticies.AddRange(new List<float> { polygon.FillColor.R / 255f, polygon.FillColor.G / 255f, polygon.FillColor.B / 255f });
+                }
+
+            }
+
+            // Lights
+            foreach (Light light in AllLights)
+            {
+                for (int i = 0; i < 72; i++)
+                {
+                    float x2 = (float)Math.Sin(Math.PI / 180 * i * 18) * light.Range + light.Position.X;
+                    float y2 = (float)Math.Cos(Math.PI / 180 * i * 18) * light.Range + light.Position.Y;
+
+                    ListVerticies.Add((float)DisplayManager.NormalizePixels_X(light.Position.X));
+                    ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(light.Position.Y));
+                    ListVerticies.AddRange(new List<float> { 1f, 1f, 1f });
+
+                    ListVerticies.Add((float)DisplayManager.NormalizePixels_X(x2));
+                    ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(y2));
+                    ListVerticies.AddRange(new List<float> { 0f, 0.4f, 0f });
+                }
+            }
+
+            // Blocks
             foreach (Block block in AllBlocks)
             {
+                /*
+                Texture texture = new Texture(block.ImageURL);
+
+                if (block.ImageURL != null)
+                {
+                    glActiveTexture(GL_TEXTURE0);
+                    Shader.UploadTexture("TEX_SAMPLER", 0);
+                    texture.Bind();
+                }*/
+
                 // Bottom left
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_X(block.Position.X));
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(block.Position.Y + block.Scale.Y));
                 ListVerticies.AddRange(new List<float> { block.Color.R / 255f, block.Color.G / 255f, block.Color.B / 255f });
-                ListVerticies.AddRange(new List<float> { 0, 0 });
+                //ListVerticies.AddRange(new List<float> { 0, 0 });
 
                 // Top left
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_X(block.Position.X));
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(block.Position.Y));
                 ListVerticies.AddRange(new List<float> { block.Color.R / 255f, block.Color.G / 255f, block.Color.B / 255f });
-                ListVerticies.AddRange(new List<float> { 0, 1 });
+                //ListVerticies.AddRange(new List<float> { 0, 1 });
 
                 // Top right
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_X(block.Position.X + block.Scale.X));
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(block.Position.Y));
                 ListVerticies.AddRange(new List<float> { block.Color.R / 255f, block.Color.G / 255f, block.Color.B / 255f });
-                ListVerticies.AddRange(new List<float> { 1, 1 });
+                //ListVerticies.AddRange(new List<float> { 1, 1 });
 
                 // Bottom left
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_X(block.Position.X));
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(block.Position.Y + block.Scale.Y));
                 ListVerticies.AddRange(new List<float> { block.Color.R / 255f, block.Color.G / 255f, block.Color.B / 255f });
-                ListVerticies.AddRange(new List<float> { 0, 0 });
+                //ListVerticies.AddRange(new List<float> { 0, 0 });
 
                 // Top right
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_X(block.Position.X + block.Scale.X));
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(block.Position.Y));
                 ListVerticies.AddRange(new List<float> { block.Color.R / 255f, block.Color.G / 255f, block.Color.B / 255f });
-                ListVerticies.AddRange(new List<float> { 1, 1 });
+                //ListVerticies.AddRange(new List<float> { 1, 1 });
 
                 // Bottom right
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_X(block.Position.X + block.Scale.X));
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(block.Position.Y + block.Scale.Y));
                 ListVerticies.AddRange(new List<float> { block.Color.R / 255f, block.Color.G / 255f, block.Color.B / 255f });
-                ListVerticies.AddRange(new List<float> { 1, 0 });
+                //ListVerticies.AddRange(new List<float> { 1, 0 });
+                /*
+                if (entity.ImageURL != null)
+                {
+                    texture.UnBind();
+                }*/
 
+                // Update camera position
+                if (block.Tag != null && block.Tag == MainCamera.FocusedObjectTag)
+                {
+                    // Copy from when window size changed
+                    CameraPosition = new Vector2(block.Position.X * -1 - block.Scale.X / 2 + InitialWindowWidth - (InitialWindowWidth / 2 - DisplayManager.WindowSize.X / 2), block.Position.Y * -1 - block.Scale.Y / 2 + InitialWindowHeight - (InitialWindowHeight / 2 - DisplayManager.WindowSize.Y / 2));
+                }
+                
             }
 
+            // Entities
             foreach (Entity entity in AllEntities)
             {
+                /*
                 Texture texture = new Texture(entity.ImageURL);
 
                 if (entity.ImageURL != null)
@@ -336,43 +404,43 @@ namespace OpenGL_GameEngine.BeEngine2D
                     glActiveTexture(GL_TEXTURE0);
                     Shader.UploadTexture("TEX_SAMPLER", 0);
                     texture.Bind();
-                }
-
+                }*/
+                
                 // Bottom left
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_X(entity.Position.X));
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(entity.Position.Y + entity.Scale.Y));
                 ListVerticies.AddRange(new List<float> { entity.Color.R / 255f, entity.Color.G / 255f, entity.Color.B / 255f });
-                ListVerticies.AddRange(new List<float> { 0, 0 });
+                //ListVerticies.AddRange(new List<float> { 0, 0 });
 
                 // Top left
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_X(entity.Position.X));
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(entity.Position.Y));
                 ListVerticies.AddRange(new List<float> { entity.Color.R / 255f, entity.Color.G / 255f, entity.Color.B / 255f });
-                ListVerticies.AddRange(new List<float> { 0, 1 });
+                //ListVerticies.AddRange(new List<float> { 0, 1 });
 
                 // Top right
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_X(entity.Position.X + entity.Scale.X));
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(entity.Position.Y));
                 ListVerticies.AddRange(new List<float> { entity.Color.R / 255f, entity.Color.G / 255f, entity.Color.B / 255f });
-                ListVerticies.AddRange(new List<float> { 1, 1 });
+                //ListVerticies.AddRange(new List<float> { 1, 1 });
 
                 // Bottom left
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_X(entity.Position.X));
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(entity.Position.Y + entity.Scale.Y));
                 ListVerticies.AddRange(new List<float> { entity.Color.R / 255f, entity.Color.G / 255f, entity.Color.B / 255f });
-                ListVerticies.AddRange(new List<float> { 0, 0 });
+                //ListVerticies.AddRange(new List<float> { 0, 0 });
 
                 // Top right
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_X(entity.Position.X + entity.Scale.X));
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(entity.Position.Y));
                 ListVerticies.AddRange(new List<float> { entity.Color.R / 255f, entity.Color.G / 255f, entity.Color.B / 255f });
-                ListVerticies.AddRange(new List<float> { 1, 1 });
+                //ListVerticies.AddRange(new List<float> { 1, 1 });
 
                 // Bottom right
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_X(entity.Position.X + entity.Scale.X));
                 ListVerticies.Add((float)DisplayManager.NormalizePixels_Y(entity.Position.Y + entity.Scale.Y));
                 ListVerticies.AddRange(new List<float> { entity.Color.R / 255f, entity.Color.G / 255f, entity.Color.B / 255f });
-                ListVerticies.AddRange(new List<float> { 1, 0 });
+                //ListVerticies.AddRange(new List<float> { 1, 0 });
 
                 /*
                 if (entity.ImageURL != null)
@@ -400,18 +468,46 @@ namespace OpenGL_GameEngine.BeEngine2D
 
             glVertexAttribPointer(1, 3, GL_FLOAT, false, 5 * sizeof(float), (void*)(2 * sizeof(float)));
             glEnableVertexAttribArray(1);
-            
-            glVertexAttribPointer(2, 2, GL_FLOAT, false, 5 * sizeof(float), (void*)(4 * sizeof(float)));
-            glEnableVertexAttribArray(2);
-            
+            /*
+            glVertexAttribPointer(1, 3, GL_FLOAT, false, 5 * sizeof(float), (void*)(2 * sizeof(float)));
+            glEnableVertexAttribArray(1);
+             
+            glVertexAttribPointer(1, 2, GL_FLOAT, false, 5 * sizeof(float), (void*)(4 * sizeof(float)));
+            glEnableVertexAttribArray(2);*/
+
             glBindBuffer(GL_ARRAY_BUFFER, 0);
             glBindVertexArray(0);
 
             glBindVertexArray(VAO);
-            glDrawArrays(GL_TRIANGLES, 0, ListVerticies.Count / 7); // :7 for textured and :5 for color only
+            glDrawArrays(GL_TRIANGLES, 0, ListVerticies.Count / 5); // :7 for textured and :5 for color only
             glBindVertexArray(0);
 
             Glfw.SwapBuffers(DisplayManager.Window);
+        }
+
+        protected unsafe void UpdateLevel()
+        {
+            Entity player = GetEntitiesByTag(CameraFocusedObjectTag)[0];
+
+            // Update sound radius
+            foreach (SoundPlayer soundPlayer in AllSoundPlayers)
+            {
+                if (soundPlayer.Radius != -1)
+                {
+                    if (Math.Pow(Math.Pow(Math.Abs(soundPlayer.Position.X - player.Position.X - (player.Scale.X / 2)), 2) + Math.Pow(Math.Abs(soundPlayer.Position.Y - player.Position.Y - (player.Scale.Y / 2)), 2), 0.5f) < soundPlayer.Radius)
+                    {
+                        soundPlayer.audioFile.Volume = soundPlayer.VolumeMultiplier * (float)(1 - (Math.Pow(Math.Pow(Math.Abs(soundPlayer.Position.X - player.Position.X - (player.Scale.X / 2)), 2) + Math.Pow(Math.Abs(soundPlayer.Position.Y - player.Position.Y - (player.Scale.Y / 2)), 2), 0.5f) / soundPlayer.Radius));
+                    }
+                    else
+                    {
+                        soundPlayer.audioFile.Volume = 0;
+                    }
+                }
+                else
+                {
+                    soundPlayer.audioFile.Volume = 1 * soundPlayer.VolumeMultiplier;
+                }
+            }
         }
 
         private void SetUpLog()
@@ -462,6 +558,12 @@ namespace OpenGL_GameEngine.BeEngine2D
             Log.PrintInfo("Registered polygon with ID \"" + light.ObjectID + "\"");
         }
 
+        public static void RegisterSoundPlayer(SoundPlayer soundPlayer)
+        {
+            AllSoundPlayers.Add(soundPlayer);
+            Log.PrintInfo("Registered polygon with ID \"" + soundPlayer.ObjectID + "\"");
+        }
+
         public static Block[] GetBlocksByTag(string tag)
         {
             List<Block> blocks = new List<Block>();
@@ -507,6 +609,11 @@ namespace OpenGL_GameEngine.BeEngine2D
 
             return null;
         }
+
+        /// <summary>
+        /// Gets normalized mouse position (from pixels to -1 - 1).
+        /// </summary>
+        /// <returns>Normalized mouse position.</returns>
 
         public Vector2 GetNormalizedMousePosition()
         {

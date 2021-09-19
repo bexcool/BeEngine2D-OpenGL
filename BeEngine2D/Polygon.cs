@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using OpenGL_GameEngine.BeEngine2D;
@@ -19,18 +20,18 @@ namespace OpenGL_GameEngine.BeEngine2D
             BeEngine2D.RegisterPolygon(this);
         }
 
-        public Polygon(PointF[] Points)
+        public Polygon(Vector2[] Positions)
         {
-            this.Points = Points;
+            this.Positions = Positions;
 
             ObjectID = RadomID.Next() + Convert.ToInt32(DateTime.Now.Millisecond);
 
             BeEngine2D.RegisterPolygon(this);
         }
 
-        public Polygon(PointF[] Points, Color FillColor)
+        public Polygon(Vector2[] Positions, Color FillColor)
         {
-            this.Points = Points;
+            this.Positions = Positions;
             this.FillColor = FillColor;
 
             ObjectID = RadomID.Next() + Convert.ToInt32(DateTime.Now.Millisecond);
@@ -38,9 +39,9 @@ namespace OpenGL_GameEngine.BeEngine2D
             BeEngine2D.RegisterPolygon(this);
         }
 
-        public Polygon(PointF[] Points, Color FillColor, string Tag)
+        public Polygon(Vector2[] Positions, Color FillColor, string Tag)
         {
-            this.Points = Points;
+            this.Positions = Positions;
             this.FillColor = FillColor;
             this.Tag = Tag;
 
@@ -49,9 +50,9 @@ namespace OpenGL_GameEngine.BeEngine2D
             BeEngine2D.RegisterPolygon(this);
         }
 
-        public Polygon(PointF[] Points, Color Color, int BorderSize)
+        public Polygon(Vector2[] Positions, Color Color, int BorderSize)
         {
-            this.Points = Points;
+            this.Positions = Positions;
             this.Color = Color;
             this.BorderSize = BorderSize;
 
@@ -60,9 +61,9 @@ namespace OpenGL_GameEngine.BeEngine2D
             BeEngine2D.RegisterPolygon(this);
         }
 
-        public Polygon(PointF[] Points, Color Color, int BorderSize, string Tag)
+        public Polygon(Vector2[] Positions, Color Color, int BorderSize, string Tag)
         {
-            this.Points = Points;
+            this.Positions = Positions;
             this.Color = Color;
             this.BorderSize = BorderSize;
             this.Tag = Tag;
@@ -72,9 +73,9 @@ namespace OpenGL_GameEngine.BeEngine2D
             BeEngine2D.RegisterPolygon(this);
         }
 
-        public Polygon(PointF[] Points, Color FillColor, Color Color, int BorderSize)
+        public Polygon(Vector2[] Positions, Color FillColor, Color Color, int BorderSize)
         {
-            this.Points = Points;
+            this.Positions = Positions;
             this.Color = Color;
             this.FillColor = FillColor;
             this.BorderSize = BorderSize;
@@ -84,9 +85,9 @@ namespace OpenGL_GameEngine.BeEngine2D
             BeEngine2D.RegisterPolygon(this);
         }
 
-        public Polygon(PointF[] Points, Color FillColor, Color Color, int BorderSize, string Tag)
+        public Polygon(Vector2[] Positions, Color FillColor, Color Color, int BorderSize, string Tag)
         {
-            this.Points = Points;
+            this.Positions = Positions;
             this.Color = Color;
             this.FillColor = FillColor;
             this.BorderSize = BorderSize;
@@ -105,7 +106,7 @@ namespace OpenGL_GameEngine.BeEngine2D
 
         public int ObjectID { get; }
         public int BorderSize { get; }
-        public PointF[] Points { get; set; }
+        public Vector2[] Positions { get; set; }
         public Color Color { get; set; }
         public Color FillColor { get; set; }
         public string Tag { get; set; }

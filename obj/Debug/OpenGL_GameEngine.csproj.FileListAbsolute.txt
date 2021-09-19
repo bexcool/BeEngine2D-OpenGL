@@ -1,4 +1,3 @@
-F:\Windows Apps Projects\OpenGL_GameEngine\obj\Debug\OpenGL_GameEngine.csprojAssemblyReference.cache
 F:\Windows Apps Projects\OpenGL_GameEngine\obj\Debug\OpenGL_GameEngine.csproj.CoreCompileInputs.cache
 F:\Windows Apps Projects\OpenGL_GameEngine\bin\Debug\OpenGL_GameEngine.exe.config
 F:\Windows Apps Projects\OpenGL_GameEngine\bin\Debug\OpenGL_GameEngine.exe
@@ -18,3 +17,18 @@ F:\Windows Apps Projects\OpenGL_GameEngine\bin\Debug\System.Buffers.xml
 F:\Windows Apps Projects\OpenGL_GameEngine\bin\Debug\System.Memory.xml
 F:\Windows Apps Projects\OpenGL_GameEngine\bin\Debug\System.Numerics.Vectors.xml
 F:\Windows Apps Projects\OpenGL_GameEngine\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
+F:\Windows Apps Projects\OpenGL_GameEngine\bin\Debug\Microsoft.Win32.Registry.dll
+F:\Windows Apps Projects\OpenGL_GameEngine\bin\Debug\NAudio.Asio.dll
+F:\Windows Apps Projects\OpenGL_GameEngine\bin\Debug\NAudio.Core.dll
+F:\Windows Apps Projects\OpenGL_GameEngine\bin\Debug\NAudio.dll
+F:\Windows Apps Projects\OpenGL_GameEngine\bin\Debug\NAudio.Midi.dll
+F:\Windows Apps Projects\OpenGL_GameEngine\bin\Debug\NAudio.Wasapi.dll
+F:\Windows Apps Projects\OpenGL_GameEngine\bin\Debug\NAudio.WinForms.dll
+F:\Windows Apps Projects\OpenGL_GameEngine\bin\Debug\NAudio.WinMM.dll
+F:\Windows Apps Projects\OpenGL_GameEngine\bin\Debug\System.Security.AccessControl.dll
+F:\Windows Apps Projects\OpenGL_GameEngine\bin\Debug\System.Security.Principal.Windows.dll
+F:\Windows Apps Projects\OpenGL_GameEngine\bin\Debug\Microsoft.Win32.Registry.xml
+F:\Windows Apps Projects\OpenGL_GameEngine\bin\Debug\NAudio.xml
+F:\Windows Apps Projects\OpenGL_GameEngine\bin\Debug\System.Security.AccessControl.xml
+F:\Windows Apps Projects\OpenGL_GameEngine\bin\Debug\System.Security.Principal.Windows.xml
+F:\Windows Apps Projects\OpenGL_GameEngine\obj\Debug\OpenGL_GameEngine.csproj.AssemblyReference.cache
